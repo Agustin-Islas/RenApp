@@ -1,5 +1,6 @@
-package com.agustin.backend_dialysis_record.controller;
+package com.agustin.backend_dialysis_record.invitation;
 
+import com.agustin.backend_dialysis_record.controller.InvitationController;
 import com.agustin.backend_dialysis_record.dto.CreateInvitationDto;
 import com.agustin.backend_dialysis_record.dto.InvitationDto;
 import com.agustin.backend_dialysis_record.repository.UserAccountRepository;

@@ -1,4 +1,4 @@
-package com.agustin.backend_dialysis_record.service.impl;
+package com.agustin.backend_dialysis_record.invitation;
 
 import com.agustin.backend_dialysis_record.dto.CreateInvitationDto;
 import com.agustin.backend_dialysis_record.dto.InvitationDto;
@@ -11,6 +11,7 @@ import com.agustin.backend_dialysis_record.repository.LinkAuditRepository;
 import com.agustin.backend_dialysis_record.repository.PatientInvitationRepository;
 import com.agustin.backend_dialysis_record.repository.PatientRepository;
 import com.agustin.backend_dialysis_record.repository.UserAccountRepository;
+import com.agustin.backend_dialysis_record.service.impl.InvitationServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
