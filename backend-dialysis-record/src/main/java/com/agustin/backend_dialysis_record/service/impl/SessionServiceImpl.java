@@ -159,7 +159,7 @@ public class SessionServiceImpl implements SessionService {
                 .anyMatch(value -> sameConcentration(value, concentration));
 
         if (!fixed && !custom) {
-            throw new IllegalArgumentException("concentration is not allowed for this patient");
+            throw new IllegalArgumentException("Esta concentración no está permitida para este paciente");
         }
     }
 

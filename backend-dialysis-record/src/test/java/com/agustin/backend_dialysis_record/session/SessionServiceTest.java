@@ -267,7 +267,7 @@ class SessionServiceTest {
             IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
                     () -> sessionService.createForPatient(patientId, dto));
 
-            assertTrue(ex.getMessage().contains("concentration is not allowed"));
+            assertTrue(ex.getMessage().contains("Esta concentración no está permitida"));
             verify(sessionRepository, never()).save(any());
         }
     }
