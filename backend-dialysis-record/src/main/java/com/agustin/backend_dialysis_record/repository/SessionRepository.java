@@ -22,6 +22,8 @@ public interface SessionRepository extends JpaRepository<Session, UUID> {
 
     List<Session> findByPatientIdAndClinicalDateOrderByDateDescHourDesc(UUID patientId, LocalDate clinicalDate);
 
+    List<Session> findByPatientIdAndClinicalDateOrderByDateAscHourAsc(UUID patientId, LocalDate clinicalDate);
+
     List<Session> findByPatientIdAndDateBetweenOrderByDateDescHourDesc(UUID patientId, LocalDate startDate, LocalDate endDate);
 
     List<Session> findByPatientIdAndClinicalDateBetweenOrderByClinicalDateDescDateDescHourDesc(UUID patientId, LocalDate startDate, LocalDate endDate);

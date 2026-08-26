@@ -53,6 +53,12 @@ public class SessionServiceImpl implements SessionService {
         Session session = sessionMapper.toEntity(sessionDto);
         session.computeClinicalDate();
         session = sessionRepository.save(session);
+        
+        if (session.getPatient() != null) {
+            recalculateBagsForClinicalDate(session.getPatient().getId(), session.getClinicalDate());
+            session = sessionRepository.findById(session.getId()).orElse(session);
+        }
+        
         return sessionMapper.toDto(session);
     }
 
@@ -63,18 +69,40 @@ public class SessionServiceImpl implements SessionService {
 
         Session session = sessionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Session not found with id: " + id));
+        
+        LocalDate oldClinicalDate = session.getClinicalDate();
+        
         validateConcentrationForPatient(session.getPatient(), sessionDto.getConcentration());
         sessionMapper.updateEntityFromDTO(session, sessionDto);
         session.computeClinicalDate();
         session = sessionRepository.save(session);
+        
+        if (session.getPatient() != null) {
+            UUID patientId = session.getPatient().getId();
+            if (oldClinicalDate != null && !oldClinicalDate.equals(session.getClinicalDate())) {
+                recalculateBagsForClinicalDate(patientId, oldClinicalDate);
+            }
+            recalculateBagsForClinicalDate(patientId, session.getClinicalDate());
+            session = sessionRepository.findById(session.getId()).orElse(session);
+        }
+        
         return sessionMapper.toDto(session);
     }
 
     @Override
     public void delete(UUID id) {
-        if (!sessionRepository.existsById(id))
-            throw new RuntimeException("Session not found with id: " + id);
+        Session session = sessionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Session not found with id: " + id));
+        
+        UUID patientId = session.getPatient() != null ? session.getPatient().getId() : null;
+        LocalDate clinicalDate = session.getClinicalDate();
+        
         sessionRepository.deleteById(id);
+        sessionRepository.flush(); // ensure it's deleted before querying
+        
+        if (patientId != null) {
+            recalculateBagsForClinicalDate(patientId, clinicalDate);
+        }
     }
 
     @Override
@@ -117,6 +145,10 @@ public class SessionServiceImpl implements SessionService {
         session.computeClinicalDate();
 
         Session saved = sessionRepository.save(session);
+        
+        recalculateBagsForClinicalDate(patientId, saved.getClinicalDate());
+        saved = sessionRepository.findById(saved.getId()).orElse(saved);
+        
         return sessionMapper.toDto(saved);
     }
 
@@ -165,5 +197,15 @@ public class SessionServiceImpl implements SessionService {
 
     private boolean sameConcentration(float a, float b) {
         return Math.abs(a - b) < 0.0001f;
+    }
+
+    private void recalculateBagsForClinicalDate(UUID patientId, LocalDate clinicalDate) {
+        if (patientId == null || clinicalDate == null) return;
+        List<Session> sessions = sessionRepository.findByPatientIdAndClinicalDateOrderByDateAscHourAsc(patientId, clinicalDate);
+        int bagNumber = 1;
+        for (Session s : sessions) {
+            s.setBag(bagNumber++);
+        }
+        sessionRepository.saveAll(sessions);
     }
 }
