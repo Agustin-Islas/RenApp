@@ -39,6 +39,10 @@ public class Session {
     private int drainage;
     private int partial;
     private String observations;
+    
+    @Column(name = "severity_level")
+    private Integer severityLevel;
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
@@ -66,6 +70,7 @@ public class Session {
         if (id == null) id = UUID.randomUUID();
         computePartial();
         computeClinicalDate();
+        computeSeverityLevel();
     }
 
     private void computePartial() {
@@ -79,11 +84,42 @@ public class Session {
             this.clinicalDate = this.date;
         }
     }
+    
+    private void computeSeverityLevel() {
+        if (this.observations == null || this.observations.trim().isEmpty()) {
+            this.severityLevel = 3;
+            return;
+        }
+        
+        String obs = this.observations.toLowerCase();
+        
+        // Nivel 1: Crítico / Infección (Rojo)
+        String[] level1Keywords = {"turbio", "sangre", "rojo", "fiebre", "pus", "caliente", "infeccion", "sucio", "niebla", "supura"};
+        for (String keyword : level1Keywords) {
+            if (obs.contains(keyword)) {
+                this.severityLevel = 1;
+                return;
+            }
+        }
+        
+        // Nivel 2: Mecánico / Advertencia (Amarillo)
+        String[] level2Keywords = {"dolor", "duele", "mareo", "lento", "tapado", "fuga", "molestia", "tirón", "espeso", "obstruido"};
+        for (String keyword : level2Keywords) {
+            if (obs.contains(keyword)) {
+                this.severityLevel = 2;
+                return;
+            }
+        }
+        
+        // Nivel 3: Informativo (Azul/Gris)
+        this.severityLevel = 3;
+    }
 
     @PreUpdate
     public void preUpdate() {
         computePartial();
         computeClinicalDate();
+        computeSeverityLevel();
     }
 
 }

@@ -44,6 +44,8 @@ public class SessionDto {
 
     @Size(max = 500, message = "observations max length is 500")
     private String observations;
+    
+    private Integer severityLevel;
 
     // se completa solo
     @Size(max = 120, message = "patientName max length is 120")

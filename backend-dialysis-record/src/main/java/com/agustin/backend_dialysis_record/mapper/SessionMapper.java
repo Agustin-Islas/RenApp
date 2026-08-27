@@ -50,6 +50,7 @@ public class SessionMapper implements GenericMapper<Session, SessionDto> {
         sessionDto.setDrainage(session.getDrainage());
         sessionDto.setPartial(session.getPartial());
         sessionDto.setObservations(session.getObservations());
+        sessionDto.setSeverityLevel(session.getSeverityLevel());
         if (session.getPatient() != null) {
             sessionDto.setPatientName(session.getPatient().getName());
             sessionDto.setPatientId(session.getPatient().getId());
