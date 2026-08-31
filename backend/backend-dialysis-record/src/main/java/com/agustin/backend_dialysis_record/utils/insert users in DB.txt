@@ -1,0 +1,20 @@
+INSERT INTO user_account (id, email, password_hash, role, enabled)
+VALUES (
+  '8b7a9b8c-1111-2222-3333-444455556666',
+  'doctor@test.com',
+  '$2a$10$tOCyYyyjYlIDXXgLirnPUugquLDdIBZjDLusGF.oroiJCHqoWZV9W',
+  'DOCTOR',
+  true
+);
+
+POST http://localhost:8080/auth/login
+
+{
+  "email": "doctor.juan.perez@clinic-example.com",
+  "password": "StrongPass123!",
+  "name": "Juan",
+  "surname": "Pérez"
+}
+
+
+http://localhost:8080/api/doctors/89a3aa48-0bf0-4a72-825d-fab8b1990f01

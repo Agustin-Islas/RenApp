@@ -1,0 +1,5 @@
+backend-dialysis-record/target
+.git
+.idea
+*.iml
+.DS_Store
