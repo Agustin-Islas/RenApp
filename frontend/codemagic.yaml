@@ -1,6 +1,7 @@
 workflows:
   android-debug-apk:
     name: Android Debug APK
+    working_directory: frontend
     max_build_duration: 60
     environment:
       flutter: stable
@@ -19,6 +20,7 @@ workflows:
 
   android-release-aab:
     name: Android Release AAB
+    working_directory: frontend
     max_build_duration: 60
     environment:
       flutter: stable
@@ -40,6 +42,7 @@ workflows:
 
   web-release:
     name: Web Release
+    working_directory: frontend
     max_build_duration: 60
     environment:
       flutter: stable
