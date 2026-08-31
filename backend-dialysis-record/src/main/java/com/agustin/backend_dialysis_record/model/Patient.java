@@ -22,6 +22,9 @@ public class Patient {
     @Column(nullable = false, updatable = false)
     private UUID id;
 
+    @Column(name = "clinic_id")
+    private UUID clinicId;
+
     @Column(nullable = false)
     private boolean active = true;
 
