@@ -1,6 +1,0 @@
-target
-.git
-.mvn/wrapper
-*.iml
-.idea
-.DS_Store

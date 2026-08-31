@@ -1,5 +1,6 @@
-backend-dialysis-record/target
+target
 .git
-.idea
+.mvn/wrapper
 *.iml
+.idea
 .DS_Store
