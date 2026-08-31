@@ -1,0 +1,22 @@
+# Carpetas Locales de Documentación y Diseño
+/dialysis-record-vault/
+/documentacion_tecnica/
+/documentos_tesis/
+/_docx_render/
+/recursos_locales/
+/mockup/
+/scripts/
+landing-mockup*
+~$*
+.agents/
+
+# Ignorar las variables de entorno de los subproyectos (Doble seguridad)
+/backend/**/.env
+/frontend/**/.env
+
+# MacOS
+.DS_Store
+
+# IDEs
+.vscode/
+.idea/
