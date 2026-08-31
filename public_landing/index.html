@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RenApp — Registro de Diálisis Peritoneal</title>
+<meta name="description" content="RenApp digitaliza el registro diario de diálisis peritoneal. Carga rápida de recambios, historial mensual, reportes PDF y panel clínico para el nefrólogo. Gratuita para pacientes."/>
+<link rel="icon" type="image/jpeg" href="logo.jpg"/>
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --primary: #00478d;
+    --primary-dark: #0F3057;
+    --primary-container: #005eb8;
+    --secondary: #006970;
+    --secondary-light: #5dd8e2;
+    --teal-50: #e0f7fa;
+    --teal-100: #b2ebf2;
+    --surface: #f7f9fb;
+    --on-surface: #191c1e;
+    --on-surface-variant: #424752;
+    --outline-variant: #c2c6d4;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --radius-2xl: 32px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--surface);
+    color: var(--on-surface);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+  .material-symbols-outlined.filled {
+    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+
+  /* ── Nav ── */
+  .nav {
+    position: fixed; top: 0; left: 0; width: 100%; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 clamp(16px, 4vw, 48px); height: 72px;
+    background: rgba(247, 249, 251, 0.85); backdrop-filter: blur(16px) saturate(180%);
+    border-bottom: 1px solid var(--outline-variant);
+    transition: box-shadow 0.3s;
+  }
+  .nav.scrolled { box-shadow: 0 1px 12px rgba(0,0,0,0.06); }
+  .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .nav-brand img { width: 40px; height: 40px; border-radius: 12px; }
+  .nav-brand span { font-size: 22px; font-weight: 800; color: var(--primary-dark); letter-spacing: -0.5px; }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a { color: var(--on-surface-variant); text-decoration: none; font-size: 15px; font-weight: 500; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--primary); }
+  .nav-cta {
+    background: var(--primary-container); color: #fff; border: none;
+    padding: 10px 24px; border-radius: 12px; font-size: 14px; font-weight: 600;
+    cursor: pointer; transition: all 0.25s; letter-spacing: 0.02em;
+  }
+  .nav-cta:hover { background: var(--primary); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,71,141,0.25); }
+  .nav-mobile { display: none; background: none; border: none; color: var(--primary); cursor: pointer; }
+
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .nav-mobile { display: block; }
+  }
+
+  /* ── Hero ── */
+  .hero {
+    position: relative; overflow: hidden;
+    padding: 120px clamp(16px, 4vw, 48px) 80px;
+    background: linear-gradient(135deg, #f0f6ff 0%, #e0f7fa 40%, #f7f9fb 100%);
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -200px; right: -200px;
+    width: 600px; height: 600px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(93,216,226,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -100px; left: -100px;
+    width: 400px; height: 400px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,71,141,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-inner {
+    max-width: 1200px; margin: 0 auto; position: relative; z-index: 2;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(0,71,141,0.08); color: var(--primary);
+    padding: 6px 16px; border-radius: 100px; font-size: 13px; font-weight: 600;
+    letter-spacing: 0.03em; width: fit-content; margin-bottom: 20px;
+    border: 1px solid rgba(0,71,141,0.12);
+  }
+  .hero-badge .material-symbols-outlined { font-size: 16px; }
+  .hero h1 {
+    font-size: clamp(32px, 4.5vw, 52px); font-weight: 900; line-height: 1.1;
+    color: var(--primary-dark); letter-spacing: -0.03em; margin-bottom: 20px;
+  }
+  .hero h1 em {
+    font-style: normal;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-desc {
+    font-size: 18px; line-height: 1.7; color: var(--on-surface-variant);
+    max-width: 520px; margin-bottom: 32px;
+  }
+  .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--primary-container); color: #fff; border: none;
+    padding: 14px 28px; border-radius: 14px; font-size: 15px; font-weight: 600;
+    cursor: pointer; transition: all 0.25s; text-decoration: none;
+  }
+  .btn-primary:hover { background: var(--primary); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,71,141,0.2); }
+  .btn-primary .material-symbols-outlined { font-size: 20px; transition: transform 0.2s; }
+  .btn-primary:hover .material-symbols-outlined { transform: translateX(3px); }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: white; color: var(--primary); border: 1.5px solid var(--outline-variant);
+    padding: 14px 28px; border-radius: 14px; font-size: 15px; font-weight: 600;
+    cursor: pointer; transition: all 0.25s; text-decoration: none;
+  }
+  .btn-secondary:hover { border-color: var(--primary); background: rgba(0,71,141,0.04); }
+
+  .hero-visual {
+    position: relative; display: flex; justify-content: center; align-items: center;
+  }
+  .hero-ui-panel {
+    width: 100%; max-width: 760px; border-radius: 12px;
+    border: 1px solid var(--outline-variant);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+  }
+  .hero-ui-panel:hover { transform: translateY(-4px); box-shadow: 0 24px 64px rgba(0,0,0,0.16); }
+
+  @media (max-width: 900px) {
+    .hero-inner { grid-template-columns: 1fr; text-align: center; }
+    .hero-badge { margin-left: auto; margin-right: auto; }
+    .hero-desc { margin-left: auto; margin-right: auto; }
+    .hero-actions { justify-content: center; }
+    .hero-visual { margin-top: 32px; }
+  }
+
+  /* ── Stats strip ── */
+  .stats-strip {
+    background: var(--primary-dark);
+    padding: 40px clamp(16px, 4vw, 48px);
+  }
+  .stats-inner {
+    max-width: 1000px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; text-align: center;
+  }
+  .stat h3 { font-size: 36px; font-weight: 800; color: var(--secondary-light); letter-spacing: -0.02em; }
+  .stat p { font-size: 14px; color: rgba(255,255,255,0.7); margin-top: 4px; font-weight: 500; }
+  @media (max-width: 600px) { .stats-inner { grid-template-columns: 1fr; gap: 24px; } }
+
+  /* ── Problem Statement ── */
+  .problem {
+    padding: 96px clamp(16px, 4vw, 48px);
+    background: white;
+  }
+  .problem-inner {
+    max-width: 900px; margin: 0 auto; text-align: center;
+  }
+  .problem-inner .eyebrow {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 13px; font-weight: 700; color: var(--secondary);
+    text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px;
+  }
+  .problem-inner h2 {
+    font-size: clamp(26px, 3vw, 36px); font-weight: 800; color: var(--primary-dark);
+    letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 20px;
+  }
+  .problem-inner p {
+    font-size: 17px; line-height: 1.7; color: var(--on-surface-variant); max-width: 700px; margin: 0 auto 40px;
+  }
+  .problem-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px; text-align: left;
+  }
+  .problem-card {
+    padding: 28px; border-radius: var(--radius-xl); border: 1px solid var(--outline-variant);
+    background: var(--surface); position: relative; overflow: hidden;
+    transition: all 0.3s;
+  }
+  .problem-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.06); }
+  .problem-card.before { border-left: 4px solid #e53935; }
+  .problem-card.after { border-left: 4px solid var(--secondary); }
+  .problem-card h4 {
+    font-size: 16px; font-weight: 700; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .problem-card.before h4 { color: #c62828; }
+  .problem-card.after h4 { color: var(--secondary); }
+  .problem-card ul { list-style: none; }
+  .problem-card ul li {
+    font-size: 14px; line-height: 1.8; color: var(--on-surface-variant);
+    padding-left: 20px; position: relative;
+  }
+  .problem-card ul li::before {
+    content: ''; position: absolute; left: 0; top: 10px;
+    width: 6px; height: 6px; border-radius: 50%;
+  }
+  .problem-card.before ul li::before { background: #ef9a9a; }
+  .problem-card.after ul li::before { background: var(--secondary-light); }
+  @media (max-width: 600px) { .problem-grid { grid-template-columns: 1fr; } }
+
+  /* ── Shared section styles ── */
+  .section { padding: 96px clamp(16px, 4vw, 48px); }
+  .section-inner { max-width: 1200px; margin: 0 auto; }
+  .section-header { text-align: center; margin-bottom: 64px; }
+  .section-header .eyebrow {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 13px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; margin-bottom: 12px;
+  }
+  .section-header h2 {
+    font-size: clamp(26px, 3vw, 36px); font-weight: 800; color: var(--primary-dark);
+    letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 12px;
+  }
+  .section-header p { font-size: 17px; color: var(--on-surface-variant); max-width: 600px; margin: 0 auto; line-height: 1.6; }
+
+  /* ── Feature rows ── */
+  .feature-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 72px;
+    align-items: center; margin-bottom: 96px;
+  }
+  .feature-row:last-child { margin-bottom: 0; }
+  .feature-row.reversed .feature-text { order: 2; }
+  .feature-row.reversed .feature-media { order: 1; }
+  .feature-text .eyebrow {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; margin-bottom: 12px;
+  }
+  .feature-text h3 {
+    font-size: 28px; font-weight: 800; color: var(--primary-dark);
+    letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 16px;
+  }
+  .feature-text p { font-size: 16px; line-height: 1.7; color: var(--on-surface-variant); margin-bottom: 24px; }
+  .feature-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .feature-list li {
+    display: flex; align-items: flex-start; gap: 10px; font-size: 15px; color: var(--on-surface);
+  }
+  .feature-list li .material-symbols-outlined { color: var(--secondary); font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+  .feature-media {
+    display: flex; justify-content: center; align-items: center;
+  }
+  .phone-ui-panel {
+    max-height: 560px; width: auto; border-radius: 16px;
+    border: 1px solid var(--outline-variant);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.10);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+  }
+  .phone-ui-panel:hover { transform: translateY(-6px); box-shadow: 0 20px 52px rgba(0,0,0,0.14); }
+  .report-img {
+    width: 100%; border-radius: var(--radius-xl); border: 1px solid var(--outline-variant);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+    transition: transform 0.4s ease;
+  }
+  .report-img:hover { transform: translateY(-4px); }
+
+  @media (max-width: 900px) {
+    .feature-row { grid-template-columns: 1fr; gap: 40px; }
+    .feature-row.reversed .feature-text { order: 1; }
+    .feature-row.reversed .feature-media { order: 2; }
+  }
+
+  /* ── Roles (Paciente / Doctor) ── */
+  .roles-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+  }
+  .role-card {
+    background: white; border-radius: var(--radius-2xl); padding: 40px;
+    border: 1px solid var(--outline-variant); position: relative; overflow: hidden;
+    transition: all 0.35s;
+  }
+  .role-card:hover { transform: translateY(-6px); box-shadow: 0 16px 48px rgba(0,0,0,0.08); }
+  .role-card .glow {
+    position: absolute; right: -40px; top: -40px;
+    width: 160px; height: 160px; border-radius: 50%; filter: blur(60px);
+    opacity: 0.3; transition: opacity 0.3s;
+  }
+  .role-card:hover .glow { opacity: 0.5; }
+  .role-card.patient .glow { background: var(--secondary-light); }
+  .role-card.doctor .glow { background: #a9c7ff; }
+  .role-header {
+    display: flex; align-items: center; gap: 14px; margin-bottom: 28px;
+    position: relative; z-index: 1;
+  }
+  .role-icon {
+    width: 52px; height: 52px; border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+  }
+  .role-card.patient .role-icon { background: var(--teal-100); color: var(--secondary); }
+  .role-card.doctor .role-icon { background: #d6e3ff; color: var(--primary); }
+  .role-header h3 { font-size: 22px; font-weight: 700; color: var(--primary-dark); }
+  .role-features { list-style: none; display: flex; flex-direction: column; gap: 18px; position: relative; z-index: 1; }
+  .role-features li { display: flex; align-items: flex-start; gap: 12px; }
+  .role-features li .material-symbols-outlined { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
+  .role-card.patient .role-features li .material-symbols-outlined { color: var(--secondary); }
+  .role-card.doctor .role-features li .material-symbols-outlined { color: var(--primary); }
+  .role-features li div h4 { font-size: 15px; font-weight: 600; color: var(--on-surface); margin-bottom: 2px; }
+  .role-features li div p { font-size: 13px; color: var(--on-surface-variant); line-height: 1.5; }
+  @media (max-width: 768px) { .roles-grid { grid-template-columns: 1fr; } }
+
+  /* ── Differentiator ── */
+  .diff-section { background: linear-gradient(135deg, var(--primary-dark) 0%, #002a52 100%); color: white; }
+  .diff-section .section-header h2 { color: white; }
+  .diff-section .section-header p { color: rgba(255,255,255,0.7); }
+  .diff-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .diff-card {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius-xl); padding: 32px;
+    transition: all 0.3s; backdrop-filter: blur(4px);
+  }
+  .diff-card:hover { background: rgba(255,255,255,0.1); transform: translateY(-4px); }
+  .diff-card .material-symbols-outlined {
+    font-size: 32px; color: var(--secondary-light); margin-bottom: 16px;
+    display: block;
+  }
+  .diff-card h4 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+  .diff-card p { font-size: 14px; line-height: 1.6; color: rgba(255,255,255,0.7); }
+  @media (max-width: 768px) { .diff-grid { grid-template-columns: 1fr; } }
+
+  /* ── CTA ── */
+  .cta-section {
+    padding: 80px clamp(16px, 4vw, 48px);
+    background: linear-gradient(135deg, #e0f7fa 0%, #f0f6ff 100%);
+    text-align: center;
+  }
+  .cta-inner { max-width: 700px; margin: 0 auto; }
+  .cta-inner h2 {
+    font-size: clamp(24px, 3vw, 34px); font-weight: 800; color: var(--primary-dark);
+    margin-bottom: 12px; letter-spacing: -0.02em;
+  }
+  .cta-inner p { font-size: 17px; color: var(--on-surface-variant); margin-bottom: 32px; line-height: 1.6; }
+  .cta-badges { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-top: 24px; }
+  .cta-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: white; padding: 10px 20px; border-radius: 100px;
+    font-size: 13px; font-weight: 600; color: var(--on-surface-variant);
+    border: 1px solid var(--outline-variant);
+  }
+  .cta-badge .material-symbols-outlined { font-size: 18px; color: var(--secondary); }
+
+  /* ── Footer ── */
+  .footer {
+    background: #1a1f24; color: rgba(255,255,255,0.6);
+    padding: 48px clamp(16px, 4vw, 48px) 32px;
+  }
+  .footer-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px;
+  }
+  .footer-brand { display: flex; align-items: center; gap: 10px; }
+  .footer-brand img { width: 32px; height: 32px; border-radius: 8px; }
+  .footer-brand span { font-size: 18px; font-weight: 700; color: white; }
+  .footer-links { display: flex; gap: 24px; }
+  .footer-links a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 14px; transition: color 0.2s; }
+  .footer-links a:hover { color: white; }
+  .footer-copy { width: 100%; text-align: center; font-size: 13px; margin-top: 24px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.08); }
+
+  /* ── Animations ── */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-on-scroll {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .animate-on-scroll.visible {
+    opacity: 1; transform: translateY(0);
+  }
+  .scroll-to-top {
+    position: fixed; bottom: 32px; right: 32px; z-index: 99;
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--primary); color: white; border: none;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; opacity: 0; visibility: hidden;
+    transition: all 0.3s ease; box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  }
+  .scroll-to-top.show { opacity: 1; visibility: visible; }
+  .scroll-to-top:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+  @media (max-width: 768px) { .scroll-to-top { bottom: 20px; right: 20px; } }
+</style>
+</head>
+<body>
+
+<!-- ════════════ NAV ════════════ -->
+<nav class="nav" id="nav">
+  <a class="nav-brand" href="#">
+    <img alt="RenApp logo" src="logo.jpg"/>
+    <span>RenApp</span>
+  </a>
+  <div class="nav-links">
+    <a href="#beneficios">Beneficios</a>
+    <a href="#funcionalidades">Funcionalidades</a>
+    <a href="#diferencial">Por qué RenApp</a>
+    <a href="#contacto">Contacto</a>
+    <button class="nav-cta" onclick="window.location.href='mailto:renapp.soporte@gmail.com?subject=Solicitud%20de%20Acceso%20-%20RenApp&body=Hola,%20quisiera%20solicitar%20m%C3%A1s%20informaci%C3%B3n%20sobre%20el%20acceso%20al%20piloto%20de%20RenApp.%0D%0A%0D%0APor%20favor,%20completa%20los%20siguientes%20datos:%0D%0A-%20Soy%20(m%C3%A9dico/paciente):%20%0D%0A-%20Ciudad/Provincia:%20'">Solicitar Acceso</button>
+  </div>
+  <button class="nav-mobile" aria-label="Menú">
+    <span class="material-symbols-outlined">menu</span>
+  </button>
+</nav>
+
+<!-- ════════════ HERO ════════════ -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-text">
+      <div class="hero-badge">
+        <span class="material-symbols-outlined filled">health_and_safety</span>
+        Registro Digital de Diálisis Peritoneal
+      </div>
+      <h1>Del cuaderno de papel a tu <em>panel clínico digital.</em></h1>
+      <p class="hero-desc">
+        RenApp transforma el registro diario de recambios de diálisis peritoneal en una herramienta simple, trazable y clínicamente útil. Gratuita para el paciente, indispensable para el nefrólogo.
+      </p>
+      <div class="hero-actions">
+        <button class="btn-primary" onclick="document.getElementById('contacto').scrollIntoView({behavior:'smooth'})">
+          Contáctanos para probarla
+          <span class="material-symbols-outlined">arrow_downward</span>
+        </button>
+        <a class="btn-secondary" href="#funcionalidades">Ver funcionalidades</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <img class="hero-ui-panel" alt="Panel del nefrólogo con gráficos de balance y UF del paciente" src="mockup/doctor_detalles_paciente_completa.png"/>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ STATS ════════════ -->
+<div class="stats-strip">
+  <div class="stats-inner">
+    <div class="stat">
+      <h3>~2.000</h3>
+      <p>Pacientes en diálisis peritoneal en Argentina</p>
+    </div>
+    <div class="stat">
+      <h3>0</h3>
+      <p>Apps existentes para registro manual (DPCA)</p>
+    </div>
+    <div class="stat">
+      <h3>100%</h3>
+      <p>Gratuita para el paciente, siempre</p>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ PROBLEM ════════════ -->
+<section class="problem">
+  <div class="problem-inner">
+    <div class="eyebrow">
+      <span class="material-symbols-outlined" style="font-size:16px">lightbulb</span>
+      El problema
+    </div>
+    <h2>El seguimiento de la diálisis peritoneal sigue siendo manual</h2>
+    <p>
+      Miles de pacientes registran sus recambios en cuadernos de papel. Los nefrólogos reciben planillas ilegibles y pierden tiempo valioso descifrando datos en cada consulta.
+    </p>
+    <div class="problem-grid">
+      <div class="problem-card before animate-on-scroll">
+        <h4>
+          <span class="material-symbols-outlined" style="font-size:20px">close</span>
+          Sin RenApp
+        </h4>
+        <ul>
+          <li>Cuadernos manchados con errores de cálculo</li>
+          <li>Datos llegan al médico solo en la consulta</li>
+          <li>Imposible detectar tendencias a tiempo</li>
+          <li>Reportes armados a mano, con omisiones</li>
+        </ul>
+      </div>
+      <div class="problem-card after animate-on-scroll">
+        <h4>
+          <span class="material-symbols-outlined" style="font-size:20px">check</span>
+          Con RenApp
+        </h4>
+        <ul>
+          <li>Registro digital con cálculos automáticos</li>
+          <li>El nefrólogo accede a los datos en tiempo real</li>
+          <li>Gráficos de balance diario y UF semanal</li>
+          <li>PDF mensual generado automáticamente</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ ROLES (Paciente / Doctor) ════════════ -->
+<section class="section" style="background: var(--surface);" id="beneficios">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="eyebrow" style="color: var(--primary);">
+        <span class="material-symbols-outlined" style="font-size:16px">people</span>
+        Dos perfiles, una plataforma
+      </div>
+      <h2>Diseñada para ambas partes del tratamiento</h2>
+      <p>Una herramienta unificada que cierra la brecha entre el cuidado en casa y la supervisión clínica.</p>
+    </div>
+    <div class="roles-grid">
+      <!-- Paciente -->
+      <div class="role-card patient animate-on-scroll">
+        <div class="glow"></div>
+        <div class="role-header">
+          <div class="role-icon">
+            <span class="material-symbols-outlined filled">home_health</span>
+          </div>
+          <h3>Para el Paciente</h3>
+        </div>
+        <ul class="role-features">
+          <li>
+            <span class="material-symbols-outlined">check_circle</span>
+            <div>
+              <h4>Carga rápida de recambios</h4>
+              <p>Campos predefinidos de fecha y hora. Cálculo automático de balance parcial.</p>
+            </div>
+          </li>
+          <li>
+            <span class="material-symbols-outlined">history</span>
+            <div>
+              <h4>Historial mensual organizado</h4>
+              <p>Acceso inmediato a todos los registros, ordenados por día con resumen de cambios y balance total.</p>
+            </div>
+          </li>
+          <li>
+            <span class="material-symbols-outlined">summarize</span>
+            <div>
+              <h4>Reporte PDF automático</h4>
+              <p>Generación del resumen mensual idéntico a la planilla física que el médico ya conoce.</p>
+            </div>
+          </li>
+          <li>
+            <span class="material-symbols-outlined">water_drop</span>
+            <div>
+              <h4>UF semanales</h4>
+              <p>Visualización del promedio de ultrafiltración por semana para seguimiento propio.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <!-- Doctor -->
+      <div class="role-card doctor animate-on-scroll">
+        <div class="glow"></div>
+        <div class="role-header">
+          <div class="role-icon">
+            <span class="material-symbols-outlined filled">stethoscope</span>
+          </div>
+          <h3>Para el Nefrólogo</h3>
+        </div>
+        <ul class="role-features">
+          <li>
+            <span class="material-symbols-outlined">monitoring</span>
+            <div>
+              <h4>Panel de pacientes asociados</h4>
+              <p>Visualización de todos los pacientes vinculados con acceso directo a su detalle clínico mensual.</p>
+            </div>
+          </li>
+          <li>
+            <span class="material-symbols-outlined">analytics</span>
+            <div>
+              <h4>Gráficos de balance y UF</h4>
+              <p>Evolución diaria del balance con media mensual. Detección visual de tendencias y anomalías.</p>
+            </div>
+          </li>
+          <li>
+            <span class="material-symbols-outlined">download</span>
+            <div>
+              <h4>Descarga de reportes</h4>
+              <p>Exportación del historial estructurado en PDF para integrar al expediente clínico.</p>
+            </div>
+          </li>
+          <li>
+            <span class="material-symbols-outlined">groups</span>
+            <div>
+              <h4>Gestión de pacientes</h4>
+              <p>Asociación de pacientes existentes al nefrólogo. Detalle del promedio de cambios diarios por paciente.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ FEATURES (Visual rows) ════════════ -->
+<section class="section" style="background: white;" id="funcionalidades">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="eyebrow" style="color: var(--secondary);">
+        <span class="material-symbols-outlined" style="font-size:16px">smartphone</span>
+        La app en acción
+      </div>
+      <h2>Funcionalidades que simplifican tu día a día</h2>
+      <p>Cada pantalla fue diseñada pensando en la rutina real del paciente y del nefrólogo.</p>
+    </div>
+
+    <!-- Feature 1: Control diario -->
+    <div class="feature-row animate-on-scroll">
+      <div class="feature-text">
+        <div class="eyebrow" style="color: var(--secondary);">
+          <span class="material-symbols-outlined" style="font-size:14px">today</span>
+          Control diario
+        </div>
+        <h3>Tu día en un solo vistazo</h3>
+        <p>
+          La pantalla principal muestra los recambios del día, el balance acumulado y un resumen claro por horario. Navegá entre días con un toque para revisar registros anteriores.
+        </p>
+        <ul class="feature-list">
+          <li>
+            <span class="material-symbols-outlined">check</span>
+            Cantidad de cambios y balance total del día
+          </li>
+          <li>
+            <span class="material-symbols-outlined">check</span>
+            Detalle de cada recambio con balance parcial
+          </li>
+          <li>
+            <span class="material-symbols-outlined">check</span>
+            Identificación automática de recambios nocturnos
+          </li>
+        </ul>
+      </div>
+      <div class="feature-media">
+        <img class="phone-ui-panel" alt="Pantalla principal del paciente mostrando registros del día" src="mockup/patient_hoy_principal.jpeg"/>
+      </div>
+    </div>
+
+    <!-- Feature 2: Nuevo registro -->
+    <div class="feature-row reversed animate-on-scroll">
+      <div class="feature-text">
+        <div class="eyebrow" style="color: var(--primary);">
+          <span class="material-symbols-outlined" style="font-size:14px">touch_app</span>
+          Registro sin fricción
+        </div>
+        <h3>Cargá un recambio en segundos</h3>
+        <p>
+          Interfaz optimizada para el uso diario. Concentraciones predefinidas y personalizables por paciente, campos numéricos claros y cálculo automático del balance parcial.
+        </p>
+        <ul class="feature-list">
+          <li>
+            <span class="material-symbols-outlined">check</span>
+            Concentraciones configurables (amarilla, verde, roja)
+          </li>
+          <li>
+            <span class="material-symbols-outlined">check</span>
+            Campo de observaciones por recambio
+          </li>
+          <li>
+            <span class="material-symbols-outlined">check</span>
+            Edición y eliminación de registros existentes
+          </li>
+        </ul>
+      </div>
+      <div class="feature-media">
+        <img class="phone-ui-panel" alt="Pantalla de nuevo registro de recambio" src="mockup/patient_hoy_nuevo_cambio.jpeg"/>
+      </div>
+    </div>
+
+    <!-- Feature 3: Historial -->
+    <div class="feature-row animate-on-scroll">
+      <div class="feature-text">
+        <div class="eyebrow" style="color: var(--secondary);">
+          <span class="material-symbols-outlined" style="font-size:14px">calendar_month</span>
+          Historial mensual
+        </div>
+        <h3>Todo tu mes organizado</h3>
+        <p>
+          Accedé al historial completo ordenado cronológicamente. Filtrá por mes, revisá el promedio de cambios diarios y las UF semanales de cada período.
+        </p>
+        <ul class="feature-list">
+          <li>
+            <span class="material-symbols-outlined">check</span>
+            Resumen por día con cantidad de cambios y balance total
+          </li>
+          <li>
+            <span class="material-symbols-outlined">check</span>
+            Promedio de cambios diarios y UF semanal
+          </li>
+          <li>
+            <span class="material-symbols-outlined">check</span>
+            Generación y descarga de PDF mensual
+          </li>
+        </ul>
+      </div>
+      <div class="feature-media">
+        <img class="phone-ui-panel" alt="Historial mensual del paciente con UF semanales" src="mockup/patient_historial.jpeg"/>
+      </div>
+    </div>
+
+    <!-- Feature 4: Reporte PDF -->
+    <div class="feature-row reversed animate-on-scroll">
+      <div class="feature-text">
+        <div class="eyebrow" style="color: var(--primary);">
+          <span class="material-symbols-outlined" style="font-size:14px">description</span>
+          Reportes clínicos
+        </div>
+        <h3>El reporte que tu médico ya conoce</h3>
+        <p>
+          RenApp genera automáticamente un PDF mensual con el formato idéntico a la planilla física tradicional. Incluye fecha, hora, bolsa, concentración, infusión, drenaje, parcial, total y observaciones.
+        </p>
+        <ul class="feature-list">
+          <li>
+            <span class="material-symbols-outlined">check</span>
+            Formato familiar para el nefrólogo
+          </li>
+          <li>
+            <span class="material-symbols-outlined">check</span>
+            UF semanales y promedio de cambios incluidos
+          </li>
+          <li>
+            <span class="material-symbols-outlined">check</span>
+            Listo para enviar o llevar a la consulta
+          </li>
+        </ul>
+      </div>
+      <div class="feature-media">
+        <img class="report-img" alt="Reporte PDF mensual generado automáticamente" src="mockup/reporte_mensual.png"/>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ DIFFERENTIATOR ════════════ -->
+<section class="section diff-section" id="diferencial">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="eyebrow" style="color: var(--secondary-light);">
+        <span class="material-symbols-outlined" style="font-size:16px">diamond</span>
+        Ventaja competitiva
+      </div>
+      <h2>¿Por qué RenApp y no otra cosa?</h2>
+      <p>No competimos con Baxter ni Fresenius. Competimos con el cuaderno de papel.</p>
+    </div>
+    <div class="diff-grid">
+      <div class="diff-card animate-on-scroll">
+        <span class="material-symbols-outlined filled">devices</span>
+        <h4>Independiente del hardware</h4>
+        <p>Funciona para DPCA manual (bolsas) y cualquier cicladora. Solo necesitás un celular.</p>
+      </div>
+      <div class="diff-card animate-on-scroll">
+        <span class="material-symbols-outlined filled">attach_money</span>
+        <h4>Gratuita para el paciente</h4>
+        <p>Sin costos ocultos, sin suscripción. El paciente nunca paga. El valor se captura del lado profesional.</p>
+      </div>
+      <div class="diff-card animate-on-scroll">
+        <span class="material-symbols-outlined filled">description</span>
+        <h4>PDF idéntico a la planilla</h4>
+        <p>El reporte mensual replica el formato que el nefrólogo ya conoce. Cero curva de aprendizaje.</p>
+      </div>
+      <div class="diff-card animate-on-scroll">
+        <span class="material-symbols-outlined filled">public</span>
+        <h4>Diseñada para Argentina</h4>
+        <p>Pensada para la realidad local: DPCA manual, obras sociales, planillas físicas y consultas presenciales.</p>
+      </div>
+      <div class="diff-card animate-on-scroll">
+        <span class="material-symbols-outlined filled">lock</span>
+        <h4>Datos protegidos</h4>
+        <p>Autenticación segura con JWT, datos encriptados y cumplimiento de la Ley 25.326 de Datos Personales.</p>
+      </div>
+      <div class="diff-card animate-on-scroll">
+        <span class="material-symbols-outlined filled">brand_family</span>
+        <h4>Neutral de marca</h4>
+        <p>No está asociada a ningún fabricante de insumos. Funciona con cualquier marca de bolsas y descartables.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ CTA ════════════ -->
+<section class="cta-section" id="contacto">
+  <div class="cta-inner">
+    <img src="logo.jpg" alt="RenApp logo" style="width: 72px; height: 72px; border-radius: 20px; margin-bottom: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.1);"/>
+    <h2>Llevá el control de tu tratamiento al siguiente nivel</h2>
+    <p>
+      Estamos buscando nefrólogos y centros de diálisis en Bahía Blanca para el programa piloto. Probá RenApp sin costo y con acompañamiento total.
+    </p>
+    <button class="btn-primary" style="margin: 0 auto;" onclick="window.location.href='mailto:renapp.soporte@gmail.com?subject=Solicitud%20de%20Acceso%20-%20RenApp&body=Hola,%20quisiera%20solicitar%20m%C3%A1s%20informaci%C3%B3n%20sobre%20el%20acceso%20al%20piloto%20de%20RenApp.%0D%0A%0D%0APor%20favor,%20completa%20los%20siguientes%20datos:%0D%0A-%20Soy%20(m%C3%A9dico/paciente):%20%0D%0A-%20Ciudad/Provincia:%20'">
+      Solicitar Acceso al Piloto
+      <span class="material-symbols-outlined">arrow_forward</span>
+    </button>
+    <div class="cta-badges">
+      <div class="cta-badge">
+        <span class="material-symbols-outlined filled">verified</span>
+        Piloto gratuito
+      </div>
+      <div class="cta-badge">
+        <span class="material-symbols-outlined filled">support_agent</span>
+        Soporte presencial
+      </div>
+      <div class="cta-badge">
+        <span class="material-symbols-outlined filled">shield</span>
+        Datos protegidos
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ FOOTER ════════════ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <img alt="RenApp" src="logo.jpg"/>
+      <span>RenApp</span>
+    </div>
+    <div class="footer-links">
+      <a href="#">Privacidad</a>
+      <a href="#">Términos</a>
+      <a href="#">Soporte</a>
+      <a href="#">Contacto</a>
+    </div>
+    <div class="footer-copy">
+      © 2026 RenApp — Registro de Diálisis Peritoneal. Todos los derechos reservados.
+    </div>
+  </div>
+</footer>
+
+<!-- Scroll to top button -->
+<button id="scrollToTopBtn" class="scroll-to-top" aria-label="Volver arriba">
+  <span class="material-symbols-outlined">arrow_upward</span>
+</button>
+
+<script>
+  // ── Nav scroll effect ──
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 20);
+  });
+
+  // ── Scroll animations ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+  // ── Scroll to top ──
+  const scrollBtn = document.getElementById('scrollToTopBtn');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 400) scrollBtn.classList.add('show');
+    else scrollBtn.classList.remove('show');
+  });
+  scrollBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+</body>
+</html>
