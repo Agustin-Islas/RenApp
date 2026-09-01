@@ -57,3 +57,41 @@ workflows:
         script: flutter build web --release --dart-define=API_BASE_URL=$API_BASE_URL
     artifacts:
       - build/web/**
+
+  windows-release:
+    name: Windows Release
+    instance_type: windows_x2
+    working_directory: frontend
+    max_build_duration: 60
+    environment:
+      flutter: stable
+      vars:
+        API_BASE_URL: "https://backend-dialysis-record-system-spring.onrender.com"
+    scripts:
+      - name: Enable Windows Desktop
+        script: flutter config --enable-windows-desktop
+      - name: Get Flutter packages
+        script: flutter pub get
+      - name: Build Windows app
+        script: flutter build windows --release --dart-define=API_BASE_URL=$API_BASE_URL
+    artifacts:
+      - build/windows/x64/runner/Release/**
+
+  macos-release:
+    name: macOS Release
+    instance_type: mac_mini_m2
+    working_directory: frontend
+    max_build_duration: 60
+    environment:
+      flutter: stable
+      vars:
+        API_BASE_URL: "https://backend-dialysis-record-system-spring.onrender.com"
+    scripts:
+      - name: Enable macOS Desktop
+        script: flutter config --enable-macos-desktop
+      - name: Get Flutter packages
+        script: flutter pub get
+      - name: Build macOS app
+        script: flutter build macos --release --dart-define=API_BASE_URL=$API_BASE_URL
+    artifacts:
+      - build/macos/Build/Products/Release/**
