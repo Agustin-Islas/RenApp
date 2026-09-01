@@ -22,3 +22,8 @@ landing-mockup*
 .idea/
 
 estrategia_ventas_b2b.md
+
+# Carpetas de configuraciones locales y credenciales
+/config_local/
+*.json.key
+*credentials*.json
