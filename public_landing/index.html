@@ -351,6 +351,7 @@
     margin-bottom: 12px; letter-spacing: -0.02em;
   }
   .cta-inner p { font-size: 17px; color: var(--on-surface-variant); margin-bottom: 32px; line-height: 1.6; }
+  .cta-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 16px; }
   .cta-badges { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-top: 24px; }
   .cta-badge {
     display: inline-flex; align-items: center; gap: 8px;
@@ -359,6 +360,12 @@
     border: 1px solid var(--outline-variant);
   }
   .cta-badge .material-symbols-outlined { font-size: 18px; color: var(--secondary); }
+  .demo-badge-inline {
+    display: inline-block; background: #fff3e0; color: #e65100;
+    font-size: 11px; font-weight: 700; padding: 3px 10px;
+    border-radius: 100px; letter-spacing: 0.05em; text-transform: uppercase;
+    margin-left: 8px; vertical-align: middle;
+  }
 
   /* ── Footer ── */
   .footer {
@@ -415,7 +422,7 @@
     <a href="#funcionalidades">Funcionalidades</a>
     <a href="#diferencial">Por qué RenApp</a>
     <a href="#contacto">Contacto</a>
-    <button class="nav-cta" onclick="window.location.href='mailto:renapp.soporte@gmail.com?subject=Solicitud%20de%20Acceso%20-%20RenApp&body=Hola,%20quisiera%20solicitar%20m%C3%A1s%20informaci%C3%B3n%20sobre%20el%20acceso%20al%20piloto%20de%20RenApp.%0D%0A%0D%0APor%20favor,%20completa%20los%20siguientes%20datos:%0D%0A-%20Soy%20(m%C3%A9dico/paciente):%20%0D%0A-%20Ciudad/Provincia:%20'">Solicitar Acceso</button>
+    <button class="nav-cta" onclick="document.getElementById('contacto').scrollIntoView({behavior:'smooth'})">Contactar</button>
   </div>
   <button class="nav-mobile" aria-label="Menú">
     <span class="material-symbols-outlined">menu</span>
@@ -429,17 +436,21 @@
       <div class="hero-badge">
         <span class="material-symbols-outlined filled">health_and_safety</span>
         Registro Digital de Diálisis Peritoneal
+        <span class="demo-badge-inline">Demo</span>
       </div>
       <h1>Del cuaderno de papel a tu <em>panel clínico digital.</em></h1>
       <p class="hero-desc">
         RenApp transforma el registro diario de recambios de diálisis peritoneal en una herramienta simple, trazable y clínicamente útil. Gratuita para el paciente, indispensable para el nefrólogo.
       </p>
       <div class="hero-actions">
-        <button class="btn-primary" onclick="document.getElementById('contacto').scrollIntoView({behavior:'smooth'})">
-          Contáctanos para probarla
-          <span class="material-symbols-outlined">arrow_downward</span>
-        </button>
-        <a class="btn-secondary" href="#funcionalidades">Ver funcionalidades</a>
+        <a class="btn-primary" href="https://renapp-5b81e.web.app" target="_blank" rel="noopener">
+          Probar Web App
+          <span class="material-symbols-outlined">open_in_new</span>
+        </a>
+        <a class="btn-secondary" href="https://github.com/Agustin-Islas/RenApp/releases" target="_blank" rel="noopener">
+          <span class="material-symbols-outlined" style="font-size:20px">android</span>
+          Descargar APK
+        </a>
       </div>
     </div>
     <div class="hero-visual">
@@ -790,22 +801,32 @@
 <section class="cta-section" id="contacto">
   <div class="cta-inner">
     <img src="logo.jpg" alt="RenApp logo" style="width: 72px; height: 72px; border-radius: 20px; margin-bottom: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.1);"/>
-    <h2>Llevá el control de tu tratamiento al siguiente nivel</h2>
+    <h2>Probá RenApp ahora mismo <span class="demo-badge-inline">Demo</span></h2>
     <p>
-      Estamos buscando nefrólogos y centros de diálisis en Bahía Blanca para el programa piloto. Probá RenApp sin costo y con acompañamiento total.
+      La aplicación se encuentra en fase de demostración. Podés probarla directamente desde tu navegador o descargar el APK para Android. Para consultas, escribinos.
     </p>
-    <button class="btn-primary" style="margin: 0 auto;" onclick="window.location.href='mailto:renapp.soporte@gmail.com?subject=Solicitud%20de%20Acceso%20-%20RenApp&body=Hola,%20quisiera%20solicitar%20m%C3%A1s%20informaci%C3%B3n%20sobre%20el%20acceso%20al%20piloto%20de%20RenApp.%0D%0A%0D%0APor%20favor,%20completa%20los%20siguientes%20datos:%0D%0A-%20Soy%20(m%C3%A9dico/paciente):%20%0D%0A-%20Ciudad/Provincia:%20'">
-      Solicitar Acceso al Piloto
-      <span class="material-symbols-outlined">arrow_forward</span>
+    <div class="cta-actions">
+      <a class="btn-primary" href="https://renapp-5b81e.web.app" target="_blank" rel="noopener">
+        Abrir Web App
+        <span class="material-symbols-outlined">open_in_new</span>
+      </a>
+      <a class="btn-secondary" href="https://github.com/Agustin-Islas/RenApp/releases" target="_blank" rel="noopener">
+        <span class="material-symbols-outlined" style="font-size:20px">android</span>
+        Descargar APK
+      </a>
+    </div>
+    <button class="btn-primary" style="margin: 0 auto; background: var(--secondary);" onclick="window.location.href='mailto:renapp.soporte@gmail.com?subject=Consulta%20-%20RenApp&body=Hola,%20quisiera%20obtener%20m%C3%A1s%20informaci%C3%B3n%20sobre%20RenApp.%0D%0A%0D%0AMis%20datos:%0D%0A-%20Soy%20(m%C3%A9dico/paciente):%20%0D%0A-%20Ciudad/Provincia:%20'">
+      <span class="material-symbols-outlined">mail</span>
+      Contactar para más información
     </button>
     <div class="cta-badges">
       <div class="cta-badge">
         <span class="material-symbols-outlined filled">verified</span>
-        Piloto gratuito
+        100% gratuita
       </div>
       <div class="cta-badge">
-        <span class="material-symbols-outlined filled">support_agent</span>
-        Soporte presencial
+        <span class="material-symbols-outlined filled">devices</span>
+        Web y Android
       </div>
       <div class="cta-badge">
         <span class="material-symbols-outlined filled">shield</span>
