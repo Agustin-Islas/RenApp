@@ -62,7 +62,9 @@ public class SecurityConfig {
                 "http://127.0.0.1:*",
                 "http://10.0.2.2:8080",
                 "https://*.codemagic.app",
-                "https://frontend-dialysis-record-system-flutter.onrender.com"
+                "https://frontend-dialysis-record-system-flutter.onrender.com",
+                "https://*.web.app",
+                "https://*.firebaseapp.com"
         ));
 
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
