@@ -2,6 +2,12 @@
 
 🌐 **Landing Page:** [renapp-eight.vercel.app](https://renapp-eight.vercel.app/)
 
+### 🚀 Pruébalo ahora (Demo)
+> ⚠️ **Aviso:** La aplicación se encuentra actualmente en fase de demostración y desarrollo (Demo).
+
+- 🌐 **Web App (Live Demo):** [renapp-5b81e.web.app](https://renapp-5b81e.web.app) *(No requiere instalación)*
+- 📱 **Android APK:** Descarga la última versión desde nuestra sección de [Releases](https://github.com/Agustin-Islas/RenApp/releases)
+
 Sistema integral para registrar, consultar y acompañar el tratamiento diario de diálisis peritoneal. El proyecto combina una aplicación multiplataforma para pacientes con un panel clínico para nefrólogos.
 
 ## Misión
