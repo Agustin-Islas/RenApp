@@ -46,7 +46,7 @@ workflows:
     max_build_duration: 60
     environment:
       groups:
-        - firebase_credentials
+        - Firebase
       flutter: stable
       vars:
         API_BASE_URL: "https://backend-dialysis-record-system-spring.onrender.com"
