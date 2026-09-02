@@ -2,7 +2,7 @@
 
 🌐 **Landing Page:** [renapp-eight.vercel.app](https://renapp-eight.vercel.app/)
 
-### 🚀 Pruébalo ahora (Demo)
+### Pruébalo ahora (Demo)
 > ⚠️ **Aviso:** La aplicación se encuentra actualmente en fase de demostración y desarrollo (Demo).
 
 - 🌐 **Web App (Live Demo):** [renapp-5b81e.web.app](https://renapp-5b81e.web.app) *(No requiere instalación)*
