@@ -72,7 +72,23 @@
   .nav-mobile { display: none; background: none; border: none; color: var(--primary); cursor: pointer; }
 
   @media (max-width: 768px) {
-    .nav-links { display: none; }
+    .nav-links { 
+      display: none; 
+      position: absolute; 
+      top: 72px; 
+      left: 0; 
+      width: 100%; 
+      background: rgba(255, 255, 255, 0.95); 
+      backdrop-filter: blur(16px);
+      flex-direction: column; 
+      padding: 24px 16px; 
+      box-shadow: 0 12px 24px rgba(0,0,0,0.1); 
+      border-bottom: 1px solid var(--outline-variant);
+      gap: 20px;
+    }
+    .nav-links.active {
+      display: flex;
+    }
     .nav-mobile { display: block; }
   }
 
@@ -885,6 +901,20 @@
   });
   scrollBtn.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // ── Mobile Menu ──
+  const navMobile = document.querySelector('.nav-mobile');
+  const navLinksContainer = document.querySelector('.nav-links');
+  
+  navMobile.addEventListener('click', () => {
+    navLinksContainer.classList.toggle('active');
+  });
+
+  navLinksContainer.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('click', () => {
+      navLinksContainer.classList.remove('active');
+    });
   });
 </script>
 </body>
