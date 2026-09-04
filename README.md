@@ -1,6 +1,6 @@
 # RenApp
 
-🌐 **Landing Page:** [renapp-eight.vercel.app](https://renapp-nine.vercel.app/)
+🌐 **Landing Page:** [renapp-nine.vercel.app](https://renapp-nine.vercel.app/)
 
 ### Pruébalo ahora (Demo)
 > ⚠️ **Aviso:** La aplicación se encuentra actualmente en fase de demostración y desarrollo (Demo).
