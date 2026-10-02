@@ -27,3 +27,6 @@ estrategia_ventas_b2b.md
 /config_local/
 *.json.key
 *credentials*.json
+
+# Carpeta de agentes de diseño
+/public_landing/agents_for_landing/
