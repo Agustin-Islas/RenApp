@@ -31,16 +31,19 @@ abstract final class AppTypography {
         headlineLarge: TextStyle(
           fontSize: 32,
           fontWeight: FontWeight.w700,
+          letterSpacing: -0.5,
           height: 1.25,
         ),
         headlineMedium: TextStyle(
           fontSize: 28,
           fontWeight: FontWeight.w700,
+          letterSpacing: -0.5,
           height: 1.29,
         ),
         headlineSmall: TextStyle(
           fontSize: 24,
           fontWeight: FontWeight.w700,
+          letterSpacing: -0.5,
           height: 1.33,
         ),
 
@@ -99,7 +102,7 @@ abstract final class AppTypography {
         labelSmall: TextStyle(
           fontSize: 11,
           fontWeight: FontWeight.w600,
-          letterSpacing: 0.5,
+          letterSpacing: 1.0,
           height: 1.45,
         ),
       ),
