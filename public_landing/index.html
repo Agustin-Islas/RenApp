@@ -260,10 +260,78 @@
         </div>
       </div>
 
-      <div class="relative animate-fade-up lg:animate-float" style="animation-delay: 500ms;">
-        <div class="absolute inset-0 bg-gradient-to-tr from-primary/5 to-secondary/5 rounded-[2.5rem] transform rotate-3 scale-105 -z-10"></div>
-        <img src="mockup/doctor_detalles_paciente_completa.png" alt="Panel del nefrólogo" 
-             class="w-full rounded-[2rem] border border-white/40 shadow-2xl shadow-primary-dark/10 object-cover" />
+      <div class="relative animate-fade-up lg:animate-float flex items-center justify-center h-full min-h-[450px] group" style="animation-delay: 500ms;">
+        <!-- Glowing background -->
+        <div class="absolute inset-0 bg-gradient-to-tr from-primary-light/30 to-secondary-light/30 rounded-full blur-[80px] transform scale-75 group-hover:scale-95 transition-transform duration-1000 ease-out"></div>
+        
+        <!-- Main Abstract Dashboard Skeleton -->
+        <div class="relative z-10 w-full max-w-[380px] bg-white/60 backdrop-blur-2xl border border-white/80 shadow-[0_20px_50px_-12px_rgba(0,71,141,0.15)] rounded-[2rem] p-6 flex flex-col gap-5 transform transition-transform duration-700 ease-out hover:scale-[1.02]">
+          
+          <!-- Header skeleton -->
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-[1rem] bg-gradient-to-tr from-primary to-secondary shadow-inner flex items-center justify-center text-white">
+                <span class="material-symbols-outlined text-[24px]">water_drop</span>
+              </div>
+              <div class="space-y-2.5">
+                <div class="h-3 w-28 bg-slate-200/80 rounded-full"></div>
+                <div class="h-2 w-16 bg-slate-200/50 rounded-full"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chart skeleton -->
+          <div class="flex-1 h-32 bg-gradient-to-b from-slate-50/50 to-white/50 rounded-2xl border border-slate-100/80 relative overflow-hidden flex items-end">
+            <!-- Subtle SVG Chart Line -->
+            <svg class="absolute inset-0 w-full h-full text-primary" preserveAspectRatio="none" viewBox="0 0 100 100">
+              <path d="M0,80 Q15,65 30,80 T60,50 T85,60 T100,30 L100,100 L0,100 Z" fill="currentColor" fill-opacity="0.05" />
+              <path d="M0,80 Q15,65 30,80 T60,50 T85,60 T100,30" fill="none" stroke="url(#gradientChart)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+              <defs>
+                <linearGradient id="gradientChart" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#006970" />
+                  <stop offset="100%" stop-color="#00478d" />
+                </linearGradient>
+              </defs>
+            </svg>
+            <!-- Glowing Node -->
+            <div class="absolute top-[28%] right-[-1%] w-3 h-3 bg-white border-2 border-primary rounded-full shadow-[0_0_12px_rgba(0,71,141,0.6)]"></div>
+          </div>
+
+          <!-- Bottom stats -->
+          <div class="grid grid-cols-2 gap-4">
+            <div class="bg-white/50 rounded-2xl border border-slate-100 p-4">
+               <div class="h-2 w-12 bg-slate-200 rounded-full mb-3"></div>
+               <div class="h-4 w-20 bg-slate-300 rounded-full"></div>
+            </div>
+            <div class="bg-white/50 rounded-2xl border border-slate-100 p-4">
+               <div class="h-2 w-12 bg-slate-200 rounded-full mb-3"></div>
+               <div class="h-4 w-16 bg-slate-300 rounded-full"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Floating Element 1 (Balance) -->
+        <div class="absolute -right-6 top-16 z-20 bg-white/90 backdrop-blur-xl border border-white shadow-xl rounded-2xl p-4 flex items-center gap-4 transform translate-y-2 lg:translate-y-6 group-hover:-translate-y-2 transition-transform duration-1000 ease-out delay-100">
+          <div class="w-10 h-10 rounded-full bg-teal-50 border border-teal-100 flex items-center justify-center text-secondary">
+            <span class="material-symbols-outlined text-[20px]">scale</span>
+          </div>
+          <div class="pr-2">
+            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Balance Final</div>
+            <div class="text-sm font-extrabold text-slate-800">+ 150 ml</div>
+          </div>
+        </div>
+
+        <!-- Floating Element 2 (Success) -->
+        <div class="absolute -left-6 bottom-20 z-20 bg-white/90 backdrop-blur-xl border border-white shadow-xl rounded-2xl p-4 flex items-center gap-3 transform -translate-y-2 lg:-translate-y-6 group-hover:translate-y-2 transition-transform duration-1000 ease-out delay-200">
+          <div class="w-10 h-10 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center text-primary">
+            <span class="material-symbols-outlined text-[20px]">cloud_sync</span>
+          </div>
+          <div class="pr-2">
+            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Estado</div>
+            <div class="text-sm font-extrabold text-slate-800">Sincronizado</div>
+          </div>
+        </div>
+
       </div>
     </div>
   </section>
@@ -350,25 +418,37 @@
             
             <div class="grid sm:grid-cols-2 gap-8">
               <div class="space-y-2">
-                <span class="material-symbols-outlined text-secondary text-2xl">timer</span>
-                <h4 class="font-heading text-lg font-bold text-slate-800">Carga Ultra-rápida</h4>
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-secondary text-2xl">timer</span>
+                  <h4 class="font-heading text-lg font-bold text-slate-800">Carga Ultra-rápida</h4>
+                </div>
                 <p class="text-sm text-slate-500 leading-relaxed">Campos predefinidos de fecha y hora. Cálculo automático de balance parcial sin matemáticas extra.</p>
               </div>
               <div class="space-y-2">
-                <span class="material-symbols-outlined text-secondary text-2xl">history</span>
-                <h4 class="font-heading text-lg font-bold text-slate-800">Historial Claro</h4>
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-secondary text-2xl">history</span>
+                  <h4 class="font-heading text-lg font-bold text-slate-800">Historial Claro</h4>
+                </div>
                 <p class="text-sm text-slate-500 leading-relaxed">Acceso a todos los registros ordenados por día, con resúmenes diarios y UF semanales.</p>
               </div>
               <div class="space-y-2">
-                <span class="material-symbols-outlined text-secondary text-2xl">description</span>
-                <h4 class="font-heading text-lg font-bold text-slate-800">Reportes a 1 clic</h4>
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-secondary text-2xl">description</span>
+                  <h4 class="font-heading text-lg font-bold text-slate-800">Reportes a 1 clic</h4>
+                </div>
                 <p class="text-sm text-slate-500 leading-relaxed">Generación de un resumen mensual en PDF idéntico a la planilla física tradicional.</p>
               </div>
               <div class="space-y-2">
-                <span class="material-symbols-outlined text-secondary text-2xl">notifications</span>
-                <h4 class="font-heading text-lg font-bold text-slate-800">Tranquilidad</h4>
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-secondary text-2xl">notifications</span>
+                  <h4 class="font-heading text-lg font-bold text-slate-800">Tranquilidad</h4>
+                </div>
                 <p class="text-sm text-slate-500 leading-relaxed">La seguridad de que tus datos están seguros y tu médico puede ver tu evolución al instante.</p>
               </div>
+            </div>
+
+            <div class="mt-10 rounded-2xl overflow-hidden bg-slate-50 border border-slate-200/50 shadow-inner group-hover:shadow-premium transition-all transform group-hover:-translate-y-1 duration-500 relative z-10 cursor-pointer flex justify-center py-8 px-4" onclick="openImageModal('mockup/historial_paciente.jpeg')">
+              <img src="mockup/historial_paciente.jpeg" alt="Historial del Paciente" class="h-[350px] w-auto rounded-[2rem] shadow-2xl border-[6px] border-slate-800 object-contain opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" />
             </div>
           </div>
         </div>
@@ -387,25 +467,43 @@
             
             <div class="grid sm:grid-cols-2 gap-8">
               <div class="space-y-2">
-                <span class="material-symbols-outlined text-primary-light text-2xl">monitoring</span>
-                <h4 class="font-heading text-lg font-bold text-white">Panel Clínico</h4>
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-primary-light text-2xl">monitoring</span>
+                  <h4 class="font-heading text-lg font-bold text-white">Panel Clínico</h4>
+                </div>
                 <p class="text-sm text-white/70 leading-relaxed">Visión general de todos tus pacientes vinculados en un solo lugar, con alertas tempranas.</p>
               </div>
               <div class="space-y-2">
-                <span class="material-symbols-outlined text-primary-light text-2xl">query_stats</span>
-                <h4 class="font-heading text-lg font-bold text-white">Gráficos de Tendencia</h4>
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-primary-light text-2xl">query_stats</span>
+                  <h4 class="font-heading text-lg font-bold text-white">Gráficos de Tendencia</h4>
+                </div>
                 <p class="text-sm text-white/70 leading-relaxed">Evolución del balance diario y UF. Detección visual rápida de anomalías o desviaciones.</p>
               </div>
               <div class="space-y-2">
-                <span class="material-symbols-outlined text-primary-light text-2xl">cloud_download</span>
-                <h4 class="font-heading text-lg font-bold text-white">Exportación Fácil</h4>
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-primary-light text-2xl">cloud_download</span>
+                  <h4 class="font-heading text-lg font-bold text-white">Exportación Fácil</h4>
+                </div>
                 <p class="text-sm text-white/70 leading-relaxed">Descarga de reportes estructurados en PDF listos para integrar al HCE (Historia Clínica Electrónica).</p>
               </div>
               <div class="space-y-2">
-                <span class="material-symbols-outlined text-primary-light text-2xl">group_add</span>
-                <h4 class="font-heading text-lg font-bold text-white">Gestión Simple</h4>
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-primary-light text-2xl">group_add</span>
+                  <h4 class="font-heading text-lg font-bold text-white">Gestión Simple</h4>
+                </div>
                 <p class="text-sm text-white/70 leading-relaxed">Vincular nuevos pacientes toma segundos mediante códigos únicos de asociación.</p>
               </div>
+            </div>
+
+            <div class="mt-10 rounded-2xl overflow-hidden border border-white/10 shadow-2xl group-hover:border-primary-light/30 transition-colors transform group-hover:-translate-y-1 duration-500 relative z-10 cursor-pointer" onclick="openImageModal('mockup/doctor_detalles_paciente_completa.png')">
+              <div class="bg-[#0f172a] px-4 py-2 border-b border-white/10 flex items-center gap-2">
+                <div class="w-2.5 h-2.5 rounded-full bg-red-400"></div>
+                <div class="w-2.5 h-2.5 rounded-full bg-amber-400"></div>
+                <div class="w-2.5 h-2.5 rounded-full bg-green-400"></div>
+                <span class="text-xs text-slate-400 font-medium ml-2">Panel del Nefrólogo</span>
+              </div>
+              <img src="mockup/doctor_detalles_paciente_completa.png" alt="Panel del Nefrólogo" class="w-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500 max-h-64 object-top" />
             </div>
           </div>
         </div>
@@ -529,9 +627,9 @@
         <span class="font-heading font-bold text-xl text-slate-400">RenApp</span>
       </div>
       
-      <div class="flex gap-6 text-sm text-slate-500 font-medium">
-        <a href="#" class="hover:text-white transition-colors">Privacidad</a>
-        <a href="#" class="hover:text-white transition-colors">Términos</a>
+      <div class="flex flex-wrap gap-6 text-sm text-slate-500 font-medium items-center justify-center md:justify-end">
+        <a href="https://www.linkedin.com/in/agustin-islas-" target="_blank" rel="noopener" class="hover:text-white transition-colors">LinkedIn</a>
+        <a href="https://wa.me/54922844530" target="_blank" rel="noopener" class="hover:text-white transition-colors">WhatsApp</a>
         <a href="mailto:renapp.soporte@gmail.com" class="hover:text-white transition-colors">Soporte</a>
       </div>
       
@@ -546,6 +644,16 @@
     class="fixed bottom-8 right-8 z-50 w-12 h-12 rounded-full bg-primary text-white shadow-premium flex items-center justify-center opacity-0 invisible translate-y-4 transition-all duration-300 hover:bg-primary-dark hover:-translate-y-1 hover:shadow-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
     <span class="material-symbols-outlined text-2xl">arrow_upward</span>
   </button>
+
+  <!-- Image Modal -->
+  <div id="imageModal" class="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur-sm opacity-0 invisible transition-all duration-300 flex items-center justify-center p-4" onclick="closeImageModal()">
+    <div class="relative max-w-5xl w-full max-h-[90vh] flex flex-col items-center justify-center" onclick="event.stopPropagation()">
+      <button onclick="closeImageModal()" class="absolute -top-12 right-0 text-white hover:text-primary-light transition-colors bg-white/10 hover:bg-white/20 rounded-full p-2 backdrop-blur-md">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+      <img id="modalImage" src="" alt="Vista ampliada" class="max-w-full max-h-[85vh] rounded-2xl shadow-2xl object-contain border border-white/10" />
+    </div>
+  </div>
 
   <script>
     // Navbar Scroll Effect
@@ -624,6 +732,23 @@
     scrollBtn.addEventListener('click', () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
+
+    // Image Modal Logic
+    const imageModal = document.getElementById('imageModal');
+    const modalImage = document.getElementById('modalImage');
+
+    function openImageModal(src) {
+      modalImage.src = src;
+      imageModal.classList.remove('opacity-0', 'invisible');
+      imageModal.classList.add('opacity-100', 'visible');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeImageModal() {
+      imageModal.classList.add('opacity-0', 'invisible');
+      imageModal.classList.remove('opacity-100', 'visible');
+      document.body.style.overflow = 'auto';
+    }
   </script>
 </body>
 </html>
