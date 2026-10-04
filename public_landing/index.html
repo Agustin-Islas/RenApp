@@ -116,14 +116,14 @@
     }
 
     /* Staggered Animations */
-    .stagger-1 { animation-delay: 100ms; opacity: 0; }
-    .stagger-2 { animation-delay: 200ms; opacity: 0; }
-    .stagger-3 { animation-delay: 300ms; opacity: 0; }
-    .stagger-4 { animation-delay: 400ms; opacity: 0; }
-    .stagger-250ms { animation-delay: 250ms !important; opacity: 0; }
-    .stagger-1s { animation-delay: 1000ms !important; opacity: 0; }
-    .stagger-1-5s { animation-delay: 1500ms !important; opacity: 0; }
-    .stagger-2-5s { animation-delay: 2500ms !important; opacity: 0; }
+    .stagger-1 { animation-delay: 100ms; }
+    .stagger-2 { animation-delay: 200ms; }
+    .stagger-3 { animation-delay: 300ms; }
+    .stagger-4 { animation-delay: 400ms; }
+    .stagger-250ms { animation-delay: 250ms !important; }
+    .stagger-1s { animation-delay: 1000ms !important; }
+    .stagger-1-5s { animation-delay: 1500ms !important; }
+    .stagger-2-5s { animation-delay: 2500ms !important; }
 
     /* Hide scrollbar for clean bento overflow if needed */
     .no-scrollbar::-webkit-scrollbar {
@@ -269,9 +269,9 @@
   <!-- ════════════ HERO ════════════ -->
   <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-mesh">
     <!-- Animated Blobs -->
-    <div class="absolute top-0 left-1/4 w-96 h-96 bg-primary-light/20 rounded-full blur-3xl pointer-events-none mix-blend-multiply animate-blob"></div>
-    <div class="absolute top-0 right-1/4 w-96 h-96 bg-secondary-light/20 rounded-full blur-3xl pointer-events-none mix-blend-multiply animate-blob" style="animation-delay: 2s;"></div>
-    <div class="absolute -bottom-32 left-1/2 w-96 h-96 bg-teal-200/20 rounded-full blur-3xl pointer-events-none mix-blend-multiply animate-blob" style="animation-delay: 4s;"></div>
+    <div class="absolute top-0 left-1/4 w-96 h-96 bg-[radial-gradient(circle,rgba(0,94,184,0.15)_0%,transparent_70%)] rounded-full pointer-events-none mix-blend-multiply animate-blob"></div>
+    <div class="absolute top-0 right-1/4 w-96 h-96 bg-[radial-gradient(circle,rgba(93,216,226,0.15)_0%,transparent_70%)] rounded-full pointer-events-none mix-blend-multiply animate-blob" style="animation-delay: 2s;"></div>
+    <div class="absolute -bottom-32 left-1/2 w-96 h-96 bg-[radial-gradient(circle,rgba(153,246,228,0.15)_0%,transparent_70%)] rounded-full pointer-events-none mix-blend-multiply animate-blob" style="animation-delay: 4s;"></div>
 
     <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center relative z-10">
       <div class="max-w-2xl">
@@ -306,13 +306,13 @@
 
       <div class="relative animate-fade-up lg:animate-float flex items-center justify-center h-full min-h-[450px] group" style="animation-delay: 500ms;">
         <!-- Glowing background -->
-        <div class="absolute inset-0 bg-gradient-to-tr from-primary-light/30 to-secondary-light/30 rounded-full blur-[80px] transform scale-75 group-hover:scale-95 transition-transform duration-1000 ease-out"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle,rgba(0,94,184,0.15)_0%,rgba(93,216,226,0.1)_50%,transparent_70%)] rounded-full transform scale-110 group-hover:scale-125 transition-transform duration-1000 ease-out"></div>
         
         <!-- Concepto Creativo: Transformación de Papel a Digital -->
         <div class="relative w-full max-w-[360px] aspect-[3/4] mx-auto group">
           
           <!-- Background Glow -->
-          <div class="absolute inset-0 bg-primary/20 rounded-[3rem] blur-3xl transform scale-125 animate-pulse"></div>
+          <div class="absolute inset-0 bg-[radial-gradient(circle,rgba(0,71,141,0.15)_0%,transparent_75%)] rounded-[3rem] transform scale-150 animate-pulse"></div>
 
           <!-- Main Container -->
           <div class="absolute inset-0 rounded-[2.5rem] shadow-[0_32px_64px_-16px_rgba(0,71,141,0.25)] overflow-hidden transition-all duration-1000 transform hover:scale-[1.02] bg-white border border-slate-100">
@@ -479,7 +479,7 @@
         
         <!-- Paciente -->
         <div class="group bg-white rounded-[2rem] p-10 border border-slate-200 hover:border-secondary/30 hover:shadow-soft transition-all duration-500 relative overflow-hidden observe-fade spotlight-card">
-          <div class="absolute -right-20 -top-20 w-64 h-64 bg-secondary-50 rounded-full blur-3xl opacity-50 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div class="absolute -right-20 -top-20 w-64 h-64 bg-[radial-gradient(circle,rgba(224,247,250,0.8)_0%,transparent_70%)] rounded-full opacity-50 group-hover:opacity-100 transition-opacity duration-500"></div>
           
           <div class="relative z-10">
             <div class="flex items-center gap-4 mb-10">
@@ -521,14 +521,14 @@
             </div>
 
             <div class="mt-10 rounded-2xl overflow-hidden bg-slate-50 border border-slate-200/50 shadow-inner group-hover:shadow-premium transition-all transform group-hover:-translate-y-1 duration-500 relative z-10 cursor-pointer flex justify-center py-8 px-4" onclick="openImageModal('mockup/historial_paciente.webp')">
-              <img loading="lazy" decoding="async" src="mockup/historial_paciente.webp" alt="Historial del Paciente" class="h-[350px] w-auto rounded-[2rem] shadow-2xl border-[6px] border-slate-800 object-contain opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" />
+              <img decoding="async" src="mockup/historial_paciente.webp" alt="Historial del Paciente" class="h-[350px] w-auto rounded-[2rem] shadow-2xl border-[6px] border-slate-800 object-contain opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" />
             </div>
           </div>
         </div>
 
         <!-- Médico -->
         <div class="group bg-primary-dark rounded-[2rem] p-10 border border-primary/20 hover:border-primary/50 hover:shadow-premium transition-all duration-500 relative overflow-hidden observe-fade spotlight-card">
-          <div class="absolute -right-20 -top-20 w-64 h-64 bg-primary rounded-full blur-3xl opacity-30 group-hover:opacity-50 transition-opacity duration-500"></div>
+          <div class="absolute -right-20 -top-20 w-64 h-64 bg-[radial-gradient(circle,rgba(0,71,141,0.6)_0%,transparent_70%)] rounded-full opacity-30 group-hover:opacity-50 transition-opacity duration-500"></div>
           
           <div class="relative z-10">
             <div class="flex items-center gap-4 mb-10">
@@ -576,7 +576,7 @@
                 <div class="w-2.5 h-2.5 rounded-full bg-green-400"></div>
                 <span class="text-xs text-slate-400 font-medium ml-2">Panel del Nefrólogo</span>
               </div>
-              <img loading="lazy" decoding="async" src="mockup/doctor_detalles_paciente_completa.webp" alt="Panel del Nefrólogo" class="w-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500 max-h-64 object-top" />
+              <img decoding="async" src="mockup/doctor_detalles_paciente_completa.webp" alt="Panel del Nefrólogo" class="w-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500 max-h-64 object-top" />
             </div>
           </div>
         </div>
@@ -598,7 +598,7 @@
         <div class="order-2 lg:order-1 flex justify-center lg:justify-end observe-fade-from-left">
           <div class="relative group">
             <div class="absolute inset-0 bg-primary/5 rounded-[2rem] transform -rotate-3 scale-105 -z-10 group-hover:rotate-0 transition-transform duration-500"></div>
-            <img loading="lazy" decoding="async" src="mockup/patient_hoy_principal.webp" alt="Pantalla Principal" class="w-full max-w-[280px] rounded-[1.5rem] shadow-premium border border-slate-200/50 group-hover:-translate-y-2 transition-all duration-500" />
+            <img decoding="async" src="mockup/patient_hoy_principal.webp" alt="Pantalla Principal" class="w-full max-w-[280px] rounded-[1.5rem] shadow-premium border border-slate-200/50 group-hover:-translate-y-2 transition-all duration-500" />
           </div>
         </div>
         <div class="order-1 lg:order-2 space-y-6 observe-fade-from-right">
@@ -638,7 +638,7 @@
         <div class="flex justify-center lg:justify-start observe-fade-from-right">
           <div class="relative group">
             <div class="absolute inset-0 bg-secondary/5 rounded-[2rem] transform rotate-3 scale-105 -z-10 group-hover:rotate-0 transition-transform duration-500"></div>
-            <img loading="lazy" decoding="async" src="mockup/patient_hoy_nuevo_cambio.webp" alt="Nuevo Recambio" class="w-full max-w-[280px] rounded-[1.5rem] shadow-premium border border-slate-200/50 group-hover:-translate-y-2 transition-all duration-500" />
+            <img decoding="async" src="mockup/patient_hoy_nuevo_cambio.webp" alt="Nuevo Recambio" class="w-full max-w-[280px] rounded-[1.5rem] shadow-premium border border-slate-200/50 group-hover:-translate-y-2 transition-all duration-500" />
           </div>
         </div>
       </div>
@@ -648,7 +648,7 @@
         <div class="order-2 lg:order-1 flex justify-center lg:justify-end observe-fade-from-left">
           <div class="relative group w-full max-w-2xl">
             <div class="absolute inset-0 bg-slate-100 rounded-[2rem] transform -rotate-1 scale-105 -z-10"></div>
-            <img loading="lazy" decoding="async" src="mockup/reporte_mensual.webp" alt="Reporte Mensual PDF" class="w-full rounded-[1.5rem] shadow-soft border border-slate-200/80 group-hover:-translate-y-2 transition-all duration-500" />
+            <img decoding="async" src="mockup/reporte_mensual.webp" alt="Reporte Mensual PDF" class="w-full rounded-[1.5rem] shadow-soft border border-slate-200/80 group-hover:-translate-y-2 transition-all duration-500" />
           </div>
         </div>
         <div class="order-1 lg:order-2 space-y-6 observe-fade-from-right">
