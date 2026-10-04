@@ -12,17 +12,10 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
-import com.nimbusds.jose.jwk.source.JWKSource;
-import com.nimbusds.jose.proc.SecurityContext;
-import com.nimbusds.jose.proc.JWSKeySelector;
-import com.nimbusds.jose.proc.JWSVerificationKeySelector;
-import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
-import com.nimbusds.jwt.proc.DefaultJWTProcessor;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -33,24 +26,18 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    @Value("classpath:supabase-jwk.json")
-    private Resource jwkResource;
+    @Value("${supabase.jwt.secret}")
+    private String jwtSecret;
 
     @Bean
-    public JwtDecoder jwtDecoder() throws Exception {
-        // Leemos la llave pública desde el archivo estático en resources/
-        String jwkJson = new String(jwkResource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
-        
-        // Supabase JWKS root tiene un array "keys"
-        JWKSet jwkSet = JWKSet.parse(jwkJson);
-        JWKSource<SecurityContext> jwkSource = new ImmutableJWKSet<>(jwkSet);
-        
-        // Configuramos el procesador nativo de Nimbus para aceptar firmas ES256 (P-256)
-        ConfigurableJWTProcessor<SecurityContext> jwtProcessor = new DefaultJWTProcessor<>();
-        JWSKeySelector<SecurityContext> jwsKeySelector = new JWSVerificationKeySelector<>(JWSAlgorithm.ES256, jwkSource);
-        jwtProcessor.setJWSKeySelector(jwsKeySelector);
-        
-        return new NimbusJwtDecoder(jwtProcessor);
+    public JwtDecoder jwtDecoder() {
+        SecretKey secretKey = new SecretKeySpec(
+                jwtSecret.getBytes(StandardCharsets.UTF_8),
+                "HmacSHA256"
+        );
+        return NimbusJwtDecoder.withSecretKey(secretKey)
+                .macAlgorithm(MacAlgorithm.HS256)
+                .build();
     }
 
     @Bean
