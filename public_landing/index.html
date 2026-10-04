@@ -127,7 +127,7 @@
     .stagger-4 { animation-delay: 400ms; }
     .stagger-250ms { animation-delay: 250ms !important; }
     .stagger-1s { animation-delay: 1000ms !important; }
-    .stagger-1-5s { animation-delay: 1500ms !important; }
+    .stagger-1-15s { animation-delay: 1150ms !important; }
     .stagger-2-5s { animation-delay: 2500ms !important; }
 
     /* Hide scrollbar for clean bento overflow if needed */
@@ -774,7 +774,7 @@
             entry.target.classList.add('stagger-250ms');
           } else if (entry.target.classList.contains('observe-fade-sequence-2')) {
             entry.target.classList.add('animate-fade-from-right');
-            entry.target.classList.add('stagger-1-5s');
+            entry.target.classList.add('stagger-1-15s');
           } else if (entry.target.classList.contains('observe-fade-delay')) {
             entry.target.classList.add('animate-fade-up-slow');
             entry.target.classList.add('stagger-1s');
