@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -6,17 +8,43 @@ import 'package:frontend_dialysis_record/features/auth/models/me_response.dart';
 
 /// Manages authentication state across the app.
 class AuthNotifier extends AsyncNotifier<MeResponse?> {
+  static const _storage = FlutterSecureStorage();
+  static const _cachedMeKey = 'cached_me_response';
+
   @override
   Future<MeResponse?> build() async {
     // Escuchar cambios de sesión en Supabase para auto-actualizar el estado
     Supabase.instance.client.auth.onAuthStateChange.listen((data) {
       final session = data.session;
       if (session == null) {
+        _storage.delete(key: _cachedMeKey);
         state = const AsyncData(null);
       } else {
         refresh();
       }
     });
+
+    final session = Supabase.instance.client.auth.currentSession;
+    if (session != null) {
+      // 1. UI Optimista: Leer caché para carga instantánea (0 latencia)
+      final cachedStr = await _storage.read(key: _cachedMeKey);
+      if (cachedStr != null) {
+        try {
+          final cachedMe = MeResponse.fromJson(jsonDecode(cachedStr));
+          // Refrescar en background sin bloquear la UI
+          _fetchAndSync().then((freshMe) {
+            if (freshMe != null) {
+              state = AsyncData(freshMe);
+            }
+          }).catchError((e) {
+            if (kDebugMode) debugPrint('Error sync background: $e');
+          });
+          return cachedMe;
+        } catch (e) {
+          if (kDebugMode) debugPrint('Error leyendo caché: $e');
+        }
+      }
+    }
 
     return _fetchAndSync();
   }
@@ -27,7 +55,11 @@ class AuthNotifier extends AsyncNotifier<MeResponse?> {
 
     final controller = ref.read(authControllerProvider);
     try {
-      return await controller.getMe();
+      final me = await controller.getMe();
+      if (me != null) {
+        await _storage.write(key: _cachedMeKey, value: jsonEncode(me.toJson()));
+      }
+      return me;
     } catch (e) {
       // Si getMe falla, el usuario existe en Supabase pero quizás aún no en Spring Boot
       final user = Supabase.instance.client.auth.currentUser;
@@ -54,7 +86,11 @@ class AuthNotifier extends AsyncNotifier<MeResponse?> {
             );
           }
           // Tras registrar, volvemos a intentar getMe
-          return await controller.getMe();
+          final me = await controller.getMe();
+          if (me != null) {
+            await _storage.write(key: _cachedMeKey, value: jsonEncode(me.toJson()));
+          }
+          return me;
         } catch (syncError) {
           if (kDebugMode) debugPrint('Error syncing with backend: $syncError');
           rethrow;
@@ -68,6 +104,7 @@ class AuthNotifier extends AsyncNotifier<MeResponse?> {
   Future<void> logout({bool global = false}) async {
     final scope = global ? SignOutScope.global : SignOutScope.local;
     await Supabase.instance.client.auth.signOut(scope: scope);
+    await _storage.delete(key: _cachedMeKey);
     state = const AsyncData(null);
   }
 

@@ -68,4 +68,23 @@ class MeResponse {
     if (value is int) return value.toDouble();
     return double.tryParse(value.toString());
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'email': email,
+      'name': name,
+      'surname': surname,
+      'role': role,
+      'dni': dni,
+      'dateOfBirth': dateOfBirth,
+      'address': address,
+      'number': number,
+      'doctorName': doctorName,
+      'doctorId': doctorId,
+      'patientCount': patientCount,
+      'patientIds': patientIds,
+      'customConcentrations': customConcentrations,
+    };
+  }
 }
