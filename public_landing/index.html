@@ -7,7 +7,10 @@
   <title>RenApp | Registro Digital de Diálisis Peritoneal</title>
   <meta name="description"
     content="RenApp digitaliza el registro diario de diálisis peritoneal. Carga rápida de recambios, historial mensual, reportes PDF y panel clínico para el nefrólogo." />
-  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="icon" type="image/png" href="favicon.webp" />
+  
+  <!-- Preloads -->
+  <link rel="preload" as="image" href="logo.webp" />
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -117,9 +120,9 @@
     .stagger-2 { animation-delay: 200ms; opacity: 0; }
     .stagger-3 { animation-delay: 300ms; opacity: 0; }
     .stagger-4 { animation-delay: 400ms; opacity: 0; }
-    .stagger-500ms { animation-delay: 500ms !important; opacity: 0; }
+    .stagger-250ms { animation-delay: 250ms !important; opacity: 0; }
     .stagger-1s { animation-delay: 1000ms !important; opacity: 0; }
-    .stagger-2s { animation-delay: 2000ms !important; opacity: 0; }
+    .stagger-1-5s { animation-delay: 1500ms !important; opacity: 0; }
     .stagger-2-5s { animation-delay: 2500ms !important; opacity: 0; }
 
     /* Hide scrollbar for clean bento overflow if needed */
@@ -233,7 +236,7 @@
   <nav id="navbar" class="fixed top-0 inset-x-0 z-50 transition-all duration-300 px-6 py-4">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
       <a href="#" class="flex items-center gap-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg">
-        <img src="logo.jpg" alt="RenApp Logo" class="w-10 h-10 rounded-xl shadow-sm transition-transform duration-300 group-hover:scale-105" />
+        <img src="logo.webp" alt="RenApp Logo" class="w-10 h-10 rounded-xl shadow-sm transition-transform duration-300 group-hover:scale-105" />
         <span class="font-heading font-bold text-2xl tracking-tight text-primary-dark">RenApp</span>
       </a>
       
@@ -517,8 +520,8 @@
               </div>
             </div>
 
-            <div class="mt-10 rounded-2xl overflow-hidden bg-slate-50 border border-slate-200/50 shadow-inner group-hover:shadow-premium transition-all transform group-hover:-translate-y-1 duration-500 relative z-10 cursor-pointer flex justify-center py-8 px-4" onclick="openImageModal('mockup/historial_paciente.jpeg')">
-              <img src="mockup/historial_paciente.jpeg" alt="Historial del Paciente" class="h-[350px] w-auto rounded-[2rem] shadow-2xl border-[6px] border-slate-800 object-contain opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" />
+            <div class="mt-10 rounded-2xl overflow-hidden bg-slate-50 border border-slate-200/50 shadow-inner group-hover:shadow-premium transition-all transform group-hover:-translate-y-1 duration-500 relative z-10 cursor-pointer flex justify-center py-8 px-4" onclick="openImageModal('mockup/historial_paciente.webp')">
+              <img loading="lazy" decoding="async" src="mockup/historial_paciente.webp" alt="Historial del Paciente" class="h-[350px] w-auto rounded-[2rem] shadow-2xl border-[6px] border-slate-800 object-contain opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" />
             </div>
           </div>
         </div>
@@ -566,14 +569,14 @@
               </div>
             </div>
 
-            <div class="mt-10 rounded-2xl overflow-hidden border border-white/10 shadow-2xl group-hover:border-primary-light/30 transition-colors transform group-hover:-translate-y-1 duration-500 relative z-10 cursor-pointer" onclick="openImageModal('mockup/doctor_detalles_paciente_completa.png')">
+            <div class="mt-10 rounded-2xl overflow-hidden border border-white/10 shadow-2xl group-hover:border-primary-light/30 transition-colors transform group-hover:-translate-y-1 duration-500 relative z-10 cursor-pointer" onclick="openImageModal('mockup/doctor_detalles_paciente_completa.webp')">
               <div class="bg-[#0f172a] px-4 py-2 border-b border-white/10 flex items-center gap-2">
                 <div class="w-2.5 h-2.5 rounded-full bg-red-400"></div>
                 <div class="w-2.5 h-2.5 rounded-full bg-amber-400"></div>
                 <div class="w-2.5 h-2.5 rounded-full bg-green-400"></div>
                 <span class="text-xs text-slate-400 font-medium ml-2">Panel del Nefrólogo</span>
               </div>
-              <img src="mockup/doctor_detalles_paciente_completa.png" alt="Panel del Nefrólogo" class="w-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500 max-h-64 object-top" />
+              <img loading="lazy" decoding="async" src="mockup/doctor_detalles_paciente_completa.webp" alt="Panel del Nefrólogo" class="w-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500 max-h-64 object-top" />
             </div>
           </div>
         </div>
@@ -595,7 +598,7 @@
         <div class="order-2 lg:order-1 flex justify-center lg:justify-end observe-fade-from-left">
           <div class="relative group">
             <div class="absolute inset-0 bg-primary/5 rounded-[2rem] transform -rotate-3 scale-105 -z-10 group-hover:rotate-0 transition-transform duration-500"></div>
-            <img src="mockup/patient_hoy_principal.jpeg" alt="Pantalla Principal" class="w-full max-w-[280px] rounded-[1.5rem] shadow-premium border border-slate-200/50 group-hover:-translate-y-2 transition-all duration-500" />
+            <img loading="lazy" decoding="async" src="mockup/patient_hoy_principal.webp" alt="Pantalla Principal" class="w-full max-w-[280px] rounded-[1.5rem] shadow-premium border border-slate-200/50 group-hover:-translate-y-2 transition-all duration-500" />
           </div>
         </div>
         <div class="order-1 lg:order-2 space-y-6 observe-fade-from-right">
@@ -635,7 +638,7 @@
         <div class="flex justify-center lg:justify-start observe-fade-from-right">
           <div class="relative group">
             <div class="absolute inset-0 bg-secondary/5 rounded-[2rem] transform rotate-3 scale-105 -z-10 group-hover:rotate-0 transition-transform duration-500"></div>
-            <img src="mockup/patient_hoy_nuevo_cambio.jpeg" alt="Nuevo Recambio" class="w-full max-w-[280px] rounded-[1.5rem] shadow-premium border border-slate-200/50 group-hover:-translate-y-2 transition-all duration-500" />
+            <img loading="lazy" decoding="async" src="mockup/patient_hoy_nuevo_cambio.webp" alt="Nuevo Recambio" class="w-full max-w-[280px] rounded-[1.5rem] shadow-premium border border-slate-200/50 group-hover:-translate-y-2 transition-all duration-500" />
           </div>
         </div>
       </div>
@@ -645,7 +648,7 @@
         <div class="order-2 lg:order-1 flex justify-center lg:justify-end observe-fade-from-left">
           <div class="relative group w-full max-w-2xl">
             <div class="absolute inset-0 bg-slate-100 rounded-[2rem] transform -rotate-1 scale-105 -z-10"></div>
-            <img src="mockup/reporte_mensual.png" alt="Reporte Mensual PDF" class="w-full rounded-[1.5rem] shadow-soft border border-slate-200/80 group-hover:-translate-y-2 transition-all duration-500" />
+            <img loading="lazy" decoding="async" src="mockup/reporte_mensual.webp" alt="Reporte Mensual PDF" class="w-full rounded-[1.5rem] shadow-soft border border-slate-200/80 group-hover:-translate-y-2 transition-all duration-500" />
           </div>
         </div>
         <div class="order-1 lg:order-2 space-y-6 observe-fade-from-right">
@@ -661,7 +664,7 @@
   <section id="contacto" class="py-24 bg-primary-dark relative overflow-hidden">
     <div class="absolute inset-0 bg-mesh opacity-10"></div>
     <div class="max-w-4xl mx-auto px-6 relative z-10 text-center">
-      <img src="logo.jpg" alt="RenApp" class="w-20 h-20 rounded-2xl mx-auto mb-8 shadow-2xl border border-white/10" />
+      <img src="logo.webp" alt="RenApp" class="w-20 h-20 rounded-2xl mx-auto mb-8 shadow-2xl border border-white/10" />
       <h2 class="font-heading text-4xl md:text-5xl font-extrabold text-white tracking-tight text-balance mb-6">
         Probá RenApp hoy mismo
       </h2>
@@ -693,7 +696,7 @@
   <footer class="bg-slate-950 py-12 border-t border-white/5">
     <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
       <div class="flex items-center gap-3">
-        <img src="logo.jpg" alt="RenApp Logo" class="w-8 h-8 rounded-lg grayscale opacity-70" />
+        <img src="logo.webp" alt="RenApp Logo" class="w-8 h-8 rounded-lg grayscale opacity-70" />
         <span class="font-heading font-bold text-xl text-slate-400">RenApp</span>
       </div>
       
@@ -763,10 +766,10 @@
             entry.target.classList.add('animate-fade-from-right');
           } else if (entry.target.classList.contains('observe-fade-sequence-1')) {
             entry.target.classList.add('animate-fade-from-left');
-            entry.target.classList.add('stagger-500ms');
+            entry.target.classList.add('stagger-250ms');
           } else if (entry.target.classList.contains('observe-fade-sequence-2')) {
             entry.target.classList.add('animate-fade-from-right');
-            entry.target.classList.add('stagger-2s');
+            entry.target.classList.add('stagger-1-5s');
           } else if (entry.target.classList.contains('observe-fade-delay')) {
             entry.target.classList.add('animate-fade-up-slow');
             entry.target.classList.add('stagger-1s');
