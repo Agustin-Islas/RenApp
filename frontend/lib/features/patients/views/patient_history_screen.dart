@@ -658,8 +658,9 @@ class _UltrafiltrationSummaryCard extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(width: AppSpacing.md),
-                Text(
-                  _formatAvg(summary.totalChanges, summary.elapsedDays),
+                AnimatedNumberText(
+                  number: double.tryParse(_formatAvg(summary.totalChanges, summary.elapsedDays).replaceAll(',', '.')) ?? 0,
+                  formatter: (v) => _formatAvg(summary.totalChanges, summary.elapsedDays),
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.w800,
                     color: scheme.primary,
@@ -735,8 +736,9 @@ class _WeeklyUfTile extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.xs),
-          Text(
-            '$value ml/día',
+          AnimatedNumberText(
+            number: value.toDouble(),
+            formatter: (v) => '$value ml/día',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w800,
               color: scheme.primary,

@@ -605,18 +605,20 @@ class _DaySummaryCard extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: _MetricTile(
+          child: _AnimatedMetricTile(
             label: 'Cambios',
-            value: summary.sessionsCount.toString(),
+            valueText: summary.sessionsCount.toString(),
+            valueNumber: summary.sessionsCount,
             subtitle: 'Registros en el día',
             icon: PhosphorIconsRegular.arrowsClockwise,
           ),
         ),
         const SizedBox(width: AppSpacing.md),
         Expanded(
-          child: _MetricTile(
+          child: _AnimatedMetricTile(
             label: 'Total del día',
-            value: '${summary.totalBalance} ml',
+            valueText: '${summary.totalBalance} ml',
+            valueNumber: summary.totalBalance,
             subtitle: 'Balance acumulado',
             icon: PhosphorIconsRegular.drop,
           ),
@@ -626,15 +628,17 @@ class _DaySummaryCard extends StatelessWidget {
   }
 }
 
-class _MetricTile extends StatelessWidget {
+class _AnimatedMetricTile extends StatelessWidget {
   final String label;
-  final String value;
+  final String valueText;
+  final num valueNumber;
   final String subtitle;
   final IconData icon;
 
-  const _MetricTile({
+  const _AnimatedMetricTile({
     required this.label,
-    required this.value,
+    required this.valueText,
+    required this.valueNumber,
     required this.subtitle,
     required this.icon,
   });
@@ -675,8 +679,9 @@ class _MetricTile extends StatelessWidget {
             ],
           ),
           const SizedBox(height: AppSpacing.md),
-          Text(
-            value,
+          AnimatedNumberText(
+            number: valueNumber.toDouble(),
+            formatter: (v) => valueText, // Mantiene el formato con "ml" si lo tiene
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
               color: scheme.primary,
               fontWeight: FontWeight.w800,

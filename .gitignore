@@ -21,6 +21,9 @@ landing-mockup*
 .vscode/
 .idea/
 
+# Node.js
+node_modules/
+
 estrategia_ventas_b2b.md
 
 # Carpetas de configuraciones locales y credenciales

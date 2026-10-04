@@ -142,21 +142,27 @@ class _DoctorPatientsScreenState extends ConsumerState<DoctorPatientsScreen> {
                           spacing: AppSpacing.md,
                           runSpacing: AppSpacing.md,
                           children: filteredPatients
+                              .asMap()
+                              .entries
                               .map(
-                                (patient) => SizedBox(
+                                (entry) => SizedBox(
                                   width: cardWidth,
-                                  child: _PatientCard(
-                                    patient: patient,
-                                    onRemove: () => _removePatient(patient),
-                                    onOpen: () {
-                                      context.push(
-                                        AppRoutes.doctorPatientDetail
-                                            .replaceFirst(
-                                              ':patientId',
-                                              patient.id!,
-                                            ),
-                                      );
-                                    },
+                                  child: AnimatedPushGesture(
+                                    child: _PatientCard(
+                                      patient: entry.value,
+                                      onRemove: () => _removePatient(entry.value),
+                                      onOpen: () {
+                                        context.push(
+                                          AppRoutes.doctorPatientDetail
+                                              .replaceFirst(
+                                                ':patientId',
+                                                entry.value.id!,
+                                              ),
+                                        );
+                                      },
+                                    ).withEntryAnimation(
+                                      delay: Duration(milliseconds: 50 * entry.key),
+                                    ),
                                   ),
                                 ),
                               )

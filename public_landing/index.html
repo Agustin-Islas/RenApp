@@ -15,65 +15,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
   
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: {
-              DEFAULT: '#00478d',
-              dark: '#0F3057',
-              light: '#005eb8',
-              50: '#f0f6ff',
-            },
-            secondary: {
-              DEFAULT: '#006970',
-              light: '#5dd8e2',
-              50: '#e0f7fa',
-            },
-            surface: '#f7f9fb',
-          },
-          fontFamily: {
-            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-            heading: ['"Outfit"', 'sans-serif'],
-          },
-          boxShadow: {
-            'soft': '0 24px 48px -12px rgba(0, 0, 0, 0.05)',
-            'premium': '0 32px 64px -16px rgba(0, 71, 141, 0.1)',
-            'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
-          },
-          animation: {
-            'fade-up': 'fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-            'float': 'float 6s ease-in-out infinite',
-            'blob': 'blob 7s infinite',
-            'shimmer': 'shimmer 2.5s linear infinite',
-          },
-          keyframes: {
-            fadeUp: {
-              '0%': { opacity: '0', transform: 'translateY(30px)' },
-              '100%': { opacity: '1', transform: 'translateY(0)' },
-            },
-            float: {
-              '0%, 100%': { transform: 'translateY(0)' },
-              '50%': { transform: 'translateY(-10px)' },
-            },
-            blob: {
-              '0%': { transform: 'translate(0px, 0px) scale(1)' },
-              '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
-              '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
-              '100%': { transform: 'translate(0px, 0px) scale(1)' },
-            },
-            shimmer: {
-              'from': { backgroundPosition: '200% 0' },
-              'to': { backgroundPosition: '-200% 0' }
-            }
-          }
-        }
-      }
-    }
-  </script>
+  <!-- Tailwind CSS (Compiled) -->
+  <link href="output.css" rel="stylesheet">
 
   <style>
     /* Custom Utilities & Resets */
@@ -103,6 +46,8 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      padding-bottom: 0.15em;
+      margin-bottom: -0.15em;
     }
 
     /* Animated Gradient Text */
@@ -113,6 +58,8 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
       animation: shimmer 3s linear infinite;
+      padding-bottom: 0.15em;
+      margin-bottom: -0.15em;
     }
 
     /* Scroll Progress Bar */
@@ -154,11 +101,26 @@
       opacity: 1;
     }
 
+    /* Prevent FOUC (Flash of Unstyled Content) before animations */
+    .observe-fade,
+    .observe-fade-from-left,
+    .observe-fade-from-right,
+    .observe-fade-delay,
+    .observe-fade-sequence-1,
+    .observe-fade-sequence-2 {
+      opacity: 0;
+      will-change: opacity, filter, transform;
+    }
+
     /* Staggered Animations */
     .stagger-1 { animation-delay: 100ms; opacity: 0; }
     .stagger-2 { animation-delay: 200ms; opacity: 0; }
     .stagger-3 { animation-delay: 300ms; opacity: 0; }
     .stagger-4 { animation-delay: 400ms; opacity: 0; }
+    .stagger-500ms { animation-delay: 500ms !important; opacity: 0; }
+    .stagger-1s { animation-delay: 1000ms !important; opacity: 0; }
+    .stagger-2s { animation-delay: 2000ms !important; opacity: 0; }
+    .stagger-2-5s { animation-delay: 2500ms !important; opacity: 0; }
 
     /* Hide scrollbar for clean bento overflow if needed */
     .no-scrollbar::-webkit-scrollbar {
@@ -182,6 +144,84 @@
     /* Smooth Image Loading */
     img {
       transition: opacity 0.3s ease;
+    }
+
+    /* Creative Hero Ring Keyframes */
+    @keyframes ringFill1 {
+      from { stroke-dashoffset: 502; }
+      to { stroke-dashoffset: 150; } /* Simula la infusión */
+    }
+    @keyframes ringFill2 {
+      from { stroke-dashoffset: 502; }
+      to { stroke-dashoffset: 80; } /* Simula el drenaje superando a la infusión */
+    }
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    @keyframes slideLeft {
+      0% { opacity: 0; transform: translateX(30px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes slideRight {
+      0% { opacity: 0; transform: translateX(-30px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes fadeDown {
+      0% { opacity: 0; transform: translateY(-20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes drawLine {
+      to { stroke-dashoffset: 0; }
+    }
+    @keyframes fadeUpElevated {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Paper to Digital Animation Keyframes - 14s loop */
+    @keyframes scanline {
+      0%, 30% { top: -10%; opacity: 0; }
+      32% { top: 0%; opacity: 1; }
+      40% { top: 100%; opacity: 1; }
+      42%, 100% { top: 110%; opacity: 0; }
+    }
+    @keyframes fadeOutPaper {
+      0%, 32% { opacity: 1; filter: blur(0); transform: scale(1); }
+      40%, 85% { opacity: 0; filter: blur(8px); transform: scale(0.95); }
+      95%, 100% { opacity: 1; filter: blur(0); transform: scale(1); }
+    }
+    @keyframes fadeInDigital {
+      0%, 32% { opacity: 0; filter: blur(8px); transform: scale(1.05); }
+      40%, 85% { opacity: 1; filter: blur(0); transform: scale(1); }
+      95%, 100% { opacity: 0; filter: blur(8px); transform: scale(1.05); }
+    }
+    .font-handwriting {
+      font-family: 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', cursive, sans-serif;
+      letter-spacing: 1px;
+    }
+    
+    /* Premium Style Text Reveal */
+    @keyframes revealText {
+      from { transform: translateY(30px); opacity: 0; filter: blur(8px); }
+      to { transform: translateY(0); opacity: 1; filter: blur(0); }
+    }
+
+    /* Apple Style Holographic Glitch */
+    @keyframes glitchPaper {
+      0%, 34% { transform: translate(0) skew(0); filter: drop-shadow(0 0 0 transparent); }
+      35% { transform: translate(-2px, 1px) skew(-1deg); filter: drop-shadow(-2px 0 0 rgba(255,0,0,0.5)) drop-shadow(2px 0 0 rgba(0,255,255,0.5)); }
+      36% { transform: translate(2px, -1px) skew(1deg); filter: drop-shadow(0 0 0 transparent); }
+      37% { transform: translate(-1px, 2px) skew(0); filter: drop-shadow(2px 0 0 rgba(255,0,0,0.5)) drop-shadow(-2px 0 0 rgba(0,255,255,0.5)); }
+      38% { transform: translate(0) skew(0); filter: drop-shadow(0 0 0 transparent); }
+      100% { transform: translate(0) skew(0); }
+    }
+
+
+    
+    /* Magnetic Button Wrapper */
+    .btn-magnetic {
+      will-change: transform;
     }
   </style>
 </head>
@@ -232,14 +272,15 @@
 
     <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center relative z-10">
       <div class="max-w-2xl">
-        <div class="inline-flex items-center gap-2 bg-white/60 backdrop-blur-md border border-slate-200/50 text-primary-dark font-semibold text-sm px-4 py-2 rounded-full mb-8 shadow-sm animate-fade-up stagger-1">
-          <span class="material-symbols-outlined filled text-primary text-lg">health_and_safety</span>
-          Registro Digital de Diálisis Peritoneal
-          <span class="bg-amber-100 text-amber-700 text-xs font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ml-2">Demo</span>
-        </div>
         
-        <h1 class="font-heading text-5xl lg:text-7xl font-extrabold text-slate-900 leading-[1.1] tracking-tight text-balance mb-6 animate-fade-up stagger-2">
-          Del cuaderno de papel a tu <span class="text-gradient-animated">panel clínico digital.</span>
+        <h1 class="font-heading text-5xl lg:text-7xl font-extrabold text-slate-900 leading-[1.1] tracking-tight mb-6 flex flex-wrap gap-x-3 gap-y-2">
+          <span class="inline-block animate-[revealText_0.8s_cubic-bezier(0.16,1,0.3,1)_0.1s_both]">Del</span>
+          <span class="inline-block animate-[revealText_0.8s_cubic-bezier(0.16,1,0.3,1)_0.2s_both]">cuaderno</span>
+          <span class="inline-block animate-[revealText_0.8s_cubic-bezier(0.16,1,0.3,1)_0.3s_both]">de</span>
+          <span class="inline-block animate-[revealText_0.8s_cubic-bezier(0.16,1,0.3,1)_0.4s_both]">papel</span>
+          <span class="inline-block animate-[revealText_0.8s_cubic-bezier(0.16,1,0.3,1)_0.5s_both]">a</span>
+          <span class="inline-block animate-[revealText_0.8s_cubic-bezier(0.16,1,0.3,1)_0.6s_both]">tu</span>
+          <span class="inline-block animate-[revealText_0.8s_cubic-bezier(0.16,1,0.3,1)_0.7s_both] text-gradient-animated w-full">panel clínico digital.</span>
         </h1>
         
         <p class="text-lg lg:text-xl text-slate-600 leading-relaxed text-balance mb-10 animate-fade-up stagger-3">
@@ -248,12 +289,12 @@
         
         <div class="flex flex-col sm:flex-row gap-4 animate-fade-up stagger-4">
           <a href="https://renapp-5b81e.web.app" target="_blank" rel="noopener" 
-             class="inline-flex items-center justify-center gap-2 bg-primary text-white font-semibold text-base px-8 py-4 rounded-2xl hover:bg-primary-dark hover:shadow-premium hover:-translate-y-1 transition-all duration-300 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
+             class="btn-magnetic inline-flex items-center justify-center gap-2 bg-primary text-white font-semibold text-base px-8 py-4 rounded-2xl hover:bg-primary-dark hover:shadow-premium transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
             Probar Web App
             <span class="material-symbols-outlined text-[20px]">open_in_new</span>
           </a>
           <a href="https://github.com/Agustin-Islas/RenApp/releases" target="_blank" rel="noopener" 
-             class="inline-flex items-center justify-center gap-2 bg-white/80 backdrop-blur-sm text-primary-dark border border-slate-200 font-semibold text-base px-8 py-4 rounded-2xl hover:bg-white hover:border-primary/30 hover:shadow-soft hover:-translate-y-1 transition-all duration-300 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
+             class="btn-magnetic inline-flex items-center justify-center gap-2 bg-white/80 backdrop-blur-sm text-primary-dark border border-slate-200 font-semibold text-base px-8 py-4 rounded-2xl hover:bg-white hover:border-primary/30 hover:shadow-soft transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
             <span class="material-symbols-outlined text-[20px]">android</span>
             Descargar APK
           </a>
@@ -264,71 +305,100 @@
         <!-- Glowing background -->
         <div class="absolute inset-0 bg-gradient-to-tr from-primary-light/30 to-secondary-light/30 rounded-full blur-[80px] transform scale-75 group-hover:scale-95 transition-transform duration-1000 ease-out"></div>
         
-        <!-- Main Abstract Dashboard Skeleton -->
-        <div class="relative z-10 w-full max-w-[380px] bg-white/60 backdrop-blur-2xl border border-white/80 shadow-[0_20px_50px_-12px_rgba(0,71,141,0.15)] rounded-[2rem] p-6 flex flex-col gap-5 transform transition-transform duration-700 ease-out hover:scale-[1.02]">
+        <!-- Concepto Creativo: Transformación de Papel a Digital -->
+        <div class="relative w-full max-w-[360px] aspect-[3/4] mx-auto group">
           
-          <!-- Header skeleton -->
-          <div class="flex items-center justify-between mb-2">
-            <div class="flex items-center gap-4">
-              <div class="w-12 h-12 rounded-[1rem] bg-gradient-to-tr from-primary to-secondary shadow-inner flex items-center justify-center text-white">
-                <span class="material-symbols-outlined text-[24px]">water_drop</span>
+          <!-- Background Glow -->
+          <div class="absolute inset-0 bg-primary/20 rounded-[3rem] blur-3xl transform scale-125 animate-pulse"></div>
+
+          <!-- Main Container -->
+          <div class="absolute inset-0 rounded-[2.5rem] shadow-[0_32px_64px_-16px_rgba(0,71,141,0.25)] overflow-hidden transition-all duration-1000 transform hover:scale-[1.02] bg-white border border-slate-100">
+            
+            <!-- STATE 1: PAPER NOTEBOOK (Messy & Chaotic) -->
+            <div class="absolute inset-0 bg-[#fdfaf2] text-slate-700 p-6 flex flex-col font-handwriting text-lg transform transition-opacity duration-1000 z-10 overflow-hidden" style="animation: fadeOutPaper 14s infinite, glitchPaper 14s infinite;">
+              
+              <!-- Faded coffee stain & grid -->
+              <div class="absolute inset-0 opacity-30 pointer-events-none" style="background-image: radial-gradient(circle at 85% 15%, #d4b895 0%, transparent 25%), repeating-linear-gradient(transparent, transparent 39px, #94a3b8 39px, #94a3b8 40px);"></div>
+              
+              <div class="relative z-10 text-2xl font-bold border-b-[3px] border-red-400/60 pb-1 mb-6 transform -rotate-2 w-max text-slate-800">Lunes 4 !!!</div>
+              
+              <div class="relative z-10 flex flex-col gap-5 opacity-80 pl-2">
+                
+                <div class="transform rotate-3 leading-tight">
+                  <span class="line-through decoration-slate-500 decoration-2 text-slate-400">Entrada: 2000</span> <span class="text-blue-800 font-bold text-xl ml-2">2000 ml</span><br>
+                  Salida 14:30 hs ➔ 2300<br>
+                  <span class="text-sm border-2 border-slate-400 rounded-md px-1.5 transform inline-block rotate-2 mt-1">Bolsa Amarilla</span>
+                </div>
+                
+                <div class="transform -rotate-2 mt-2 leading-tight">
+                  18h - <span class="bg-green-200/50 px-1 font-bold">Verde</span><br>
+                  metí 2000 - saqué 2150<br>
+                  <span class="text-red-600 font-extrabold text-xl">sobran 150??</span>
+                </div>
+                
+                <div class="transform rotate-3 mt-3 text-slate-500 opacity-60">
+                  <span class="line-through decoration-2">Noche: 22h</span> (me dormí)
+                </div>
               </div>
-              <div class="space-y-2.5">
-                <div class="h-3 w-28 bg-slate-200/80 rounded-full"></div>
-                <div class="h-2 w-16 bg-slate-200/50 rounded-full"></div>
+
+              <!-- Messy summary -->
+              <div class="mt-auto self-center bg-red-50 border-[3px] border-red-500 border-dashed rounded-lg p-3 text-red-600 font-extrabold transform -rotate-6 text-2xl shadow-sm z-20">
+                Total = +450? 🤷
               </div>
             </div>
-          </div>
 
-          <!-- Chart skeleton -->
-          <div class="flex-1 h-32 bg-gradient-to-b from-slate-50/50 to-white/50 rounded-2xl border border-slate-100/80 relative overflow-hidden flex items-end">
-            <!-- Subtle SVG Chart Line -->
-            <svg class="absolute inset-0 w-full h-full text-primary" preserveAspectRatio="none" viewBox="0 0 100 100">
-              <path d="M0,80 Q15,65 30,80 T60,50 T85,60 T100,30 L100,100 L0,100 Z" fill="currentColor" fill-opacity="0.05" />
-              <path d="M0,80 Q15,65 30,80 T60,50 T85,60 T100,30" fill="none" stroke="url(#gradientChart)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
-              <defs>
-                <linearGradient id="gradientChart" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stop-color="#006970" />
-                  <stop offset="100%" stop-color="#00478d" />
-                </linearGradient>
-              </defs>
-            </svg>
-            <!-- Glowing Node -->
-            <div class="absolute top-[28%] right-[-1%] w-3 h-3 bg-white border-2 border-primary rounded-full shadow-[0_0_12px_rgba(0,71,141,0.6)]"></div>
-          </div>
+            <!-- STATE 2: DIGITAL UI (Skeleton Abstract) -->
+            <div class="absolute inset-0 bg-[#f8fafc] flex flex-col p-5 transform transition-opacity duration-1000 z-0 overflow-hidden" style="animation: fadeInDigital 14s infinite;">
+              
+              <!-- Header Abstract -->
+              <div class="bg-gradient-to-r from-primary/10 to-primary/5 rounded-[1rem] p-4 flex justify-between items-center mb-5 h-[60px]">
+                <div class="w-8 h-8 rounded-full bg-primary/20 animate-pulse"></div>
+                <div class="w-24 h-4 rounded-full bg-primary/30 animate-pulse"></div>
+                <div class="w-8 h-8 rounded-full bg-primary/20 animate-pulse"></div>
+              </div>
 
-          <!-- Bottom stats -->
-          <div class="grid grid-cols-2 gap-4">
-            <div class="bg-white/50 rounded-2xl border border-slate-100 p-4">
-               <div class="h-2 w-12 bg-slate-200 rounded-full mb-3"></div>
-               <div class="h-4 w-20 bg-slate-300 rounded-full"></div>
+              <!-- Strip Abstract -->
+              <div class="flex gap-3 mb-5 overflow-hidden">
+                <div class="bg-slate-200 rounded-[14px] w-[70px] h-[55px] flex-shrink-0 animate-pulse"></div>
+                <div class="bg-primary/20 rounded-[14px] w-[70px] h-[55px] flex-shrink-0 border-2 border-primary/40 animate-pulse"></div>
+                <div class="bg-slate-200 rounded-[14px] w-[70px] h-[55px] flex-shrink-0 animate-pulse"></div>
+              </div>
+
+              <!-- Metrics Abstract (Hero Number Highlighted) -->
+              <div class="grid grid-cols-2 gap-3 mb-6">
+                <div class="bg-white border border-slate-100 rounded-[1rem] p-4 shadow-sm flex flex-col items-center justify-center animate-pulse">
+                  <div class="w-8 h-8 rounded-full bg-slate-100 mb-2"></div>
+                  <div class="w-12 h-6 rounded-md bg-slate-200 mb-2"></div>
+                  <div class="w-16 h-2 rounded-full bg-slate-100"></div>
+                </div>
+                
+                <!-- Magic Number Highlight -->
+                <div class="bg-white border border-primary/20 rounded-[1rem] p-4 shadow-[0_8px_16px_rgba(0,71,141,0.08)] flex flex-col items-center justify-center relative overflow-hidden">
+                  <div class="absolute inset-0 bg-primary/5"></div>
+                  <div class="relative z-10 flex flex-col items-center">
+                    <div class="w-16 h-2 rounded-full bg-primary/20 animate-pulse mb-2"></div>
+                    <div class="text-4xl font-extrabold text-primary leading-none mb-2 drop-shadow-sm">+450</div>
+                    <div class="w-20 h-2 rounded-full bg-primary/20 animate-pulse"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- List Abstract -->
+              <div class="w-32 h-3 bg-slate-200 rounded-full mb-3 animate-pulse"></div>
+              
+              <div class="bg-white border border-slate-100 rounded-xl p-3 shadow-sm flex items-center gap-3 animate-pulse">
+                <div class="w-10 h-10 rounded-full bg-slate-100"></div>
+                <div class="flex-1 flex flex-col gap-2">
+                  <div class="w-24 h-3 bg-slate-200 rounded-full"></div>
+                  <div class="w-32 h-2 bg-slate-100 rounded-full"></div>
+                </div>
+                <div class="w-12 h-5 bg-primary/10 rounded-md"></div>
+              </div>
+
             </div>
-            <div class="bg-white/50 rounded-2xl border border-slate-100 p-4">
-               <div class="h-2 w-12 bg-slate-200 rounded-full mb-3"></div>
-               <div class="h-4 w-16 bg-slate-300 rounded-full"></div>
-            </div>
-          </div>
-        </div>
 
-        <!-- Floating Element 1 (Balance) -->
-        <div class="absolute -right-6 top-16 z-20 bg-white/90 backdrop-blur-xl border border-white shadow-xl rounded-2xl p-4 flex items-center gap-4 transform translate-y-2 lg:translate-y-6 group-hover:-translate-y-2 transition-transform duration-1000 ease-out delay-100">
-          <div class="w-10 h-10 rounded-full bg-teal-50 border border-teal-100 flex items-center justify-center text-secondary">
-            <span class="material-symbols-outlined text-[20px]">scale</span>
-          </div>
-          <div class="pr-2">
-            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Balance Final</div>
-            <div class="text-sm font-extrabold text-slate-800">+ 150 ml</div>
-          </div>
-        </div>
-
-        <!-- Floating Element 2 (Success) -->
-        <div class="absolute -left-6 bottom-20 z-20 bg-white/90 backdrop-blur-xl border border-white shadow-xl rounded-2xl p-4 flex items-center gap-3 transform -translate-y-2 lg:-translate-y-6 group-hover:translate-y-2 transition-transform duration-1000 ease-out delay-200">
-          <div class="w-10 h-10 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center text-primary">
-            <span class="material-symbols-outlined text-[20px]">cloud_sync</span>
-          </div>
-          <div class="pr-2">
-            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Estado</div>
-            <div class="text-sm font-extrabold text-slate-800">Sincronizado</div>
+            <!-- THE SCANLINE / LASER -->
+            <div class="absolute left-0 right-0 h-1.5 bg-secondary shadow-[0_0_25px_10px_rgba(93,216,226,0.8),0_5px_15px_rgba(255,0,255,0.5),0_-5px_15px_rgba(0,255,255,0.5)] z-20 pointer-events-none mix-blend-screen" style="animation: scanline 14s ease-in-out infinite;"></div>
           </div>
         </div>
 
@@ -347,7 +417,7 @@
 
       <div class="grid md:grid-cols-2 gap-8 lg:gap-12">
         <!-- Sin RenApp -->
-        <div class="bg-red-50/50 rounded-3xl p-8 lg:p-12 border border-red-100 hover:shadow-soft transition-all duration-300 observe-fade spotlight-card">
+        <div class="bg-red-50/50 rounded-3xl p-8 lg:p-12 border border-red-100 hover:shadow-soft transition-all duration-300 observe-fade-sequence-1 spotlight-card">
           <div class="w-12 h-12 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center mb-8">
             <span class="material-symbols-outlined">close</span>
           </div>
@@ -369,7 +439,7 @@
         </div>
 
         <!-- Con RenApp -->
-        <div class="bg-gradient-to-br from-teal-50/50 to-blue-50/50 rounded-3xl p-8 lg:p-12 border border-teal-100 hover:shadow-premium hover:-translate-y-1 transition-all duration-300 observe-fade spotlight-card">
+        <div class="bg-gradient-to-br from-teal-50/50 to-blue-50/50 rounded-3xl p-8 lg:p-12 border border-teal-100 hover:shadow-premium hover:-translate-y-1 transition-all duration-300 observe-fade-sequence-2 spotlight-card">
           <div class="w-12 h-12 bg-primary text-white rounded-2xl flex items-center justify-center mb-8 shadow-md">
             <span class="material-symbols-outlined">check</span>
           </div>
@@ -521,14 +591,14 @@
       </div>
 
       <!-- Feature 1 -->
-      <div class="grid lg:grid-cols-2 gap-16 items-center mb-32 observe-fade">
-        <div class="order-2 lg:order-1 flex justify-center lg:justify-end">
+      <div class="grid lg:grid-cols-2 gap-16 items-center mb-32">
+        <div class="order-2 lg:order-1 flex justify-center lg:justify-end observe-fade-from-left">
           <div class="relative group">
             <div class="absolute inset-0 bg-primary/5 rounded-[2rem] transform -rotate-3 scale-105 -z-10 group-hover:rotate-0 transition-transform duration-500"></div>
-            <img src="mockup/patient_hoy_principal.jpeg" alt="Pantalla Principal" class="w-full max-w-[320px] rounded-[1.5rem] shadow-premium border border-slate-200/50 group-hover:-translate-y-2 transition-all duration-500" />
+            <img src="mockup/patient_hoy_principal.jpeg" alt="Pantalla Principal" class="w-full max-w-[280px] rounded-[1.5rem] shadow-premium border border-slate-200/50 group-hover:-translate-y-2 transition-all duration-500" />
           </div>
         </div>
-        <div class="order-1 lg:order-2 space-y-6">
+        <div class="order-1 lg:order-2 space-y-6 observe-fade-from-right">
           <span class="font-heading font-bold text-primary tracking-widest uppercase text-xs">Control Diario</span>
           <h3 class="font-heading text-3xl lg:text-4xl font-bold text-slate-900 leading-tight tracking-tight">Tu día en un solo vistazo</h3>
           <p class="text-lg text-slate-600 leading-relaxed text-balance">La pantalla principal resume tu estado actual de manera elegante. Balance acumulado, recambios del día, e identificación automática de los cambios nocturnos.</p>
@@ -546,8 +616,8 @@
       </div>
 
       <!-- Feature 2 -->
-      <div class="grid lg:grid-cols-2 gap-16 items-center mb-32 observe-fade">
-        <div class="space-y-6">
+      <div class="grid lg:grid-cols-2 gap-16 items-center mb-32">
+        <div class="space-y-6 observe-fade-from-left">
           <span class="font-heading font-bold text-secondary tracking-widest uppercase text-xs">Registro Sin Fricción</span>
           <h3 class="font-heading text-3xl lg:text-4xl font-bold text-slate-900 leading-tight tracking-tight">Cargá recambios en segundos</h3>
           <p class="text-lg text-slate-600 leading-relaxed text-balance">Optimizamos el flujo para que cargar datos sea un placer, no una tarea. Tipos de bolsa (Amarilla, Verde, Roja) a un toque de distancia.</p>
@@ -562,23 +632,23 @@
             </li>
           </ul>
         </div>
-        <div class="flex justify-center lg:justify-start">
+        <div class="flex justify-center lg:justify-start observe-fade-from-right">
           <div class="relative group">
             <div class="absolute inset-0 bg-secondary/5 rounded-[2rem] transform rotate-3 scale-105 -z-10 group-hover:rotate-0 transition-transform duration-500"></div>
-            <img src="mockup/patient_hoy_nuevo_cambio.jpeg" alt="Nuevo Recambio" class="w-full max-w-[320px] rounded-[1.5rem] shadow-premium border border-slate-200/50 group-hover:-translate-y-2 transition-all duration-500" />
+            <img src="mockup/patient_hoy_nuevo_cambio.jpeg" alt="Nuevo Recambio" class="w-full max-w-[280px] rounded-[1.5rem] shadow-premium border border-slate-200/50 group-hover:-translate-y-2 transition-all duration-500" />
           </div>
         </div>
       </div>
 
       <!-- Feature 3 -->
-      <div class="grid lg:grid-cols-2 gap-16 items-center observe-fade">
-        <div class="order-2 lg:order-1 flex justify-center lg:justify-end">
+      <div class="grid lg:grid-cols-2 gap-16 items-center">
+        <div class="order-2 lg:order-1 flex justify-center lg:justify-end observe-fade-from-left">
           <div class="relative group w-full max-w-2xl">
             <div class="absolute inset-0 bg-slate-100 rounded-[2rem] transform -rotate-1 scale-105 -z-10"></div>
             <img src="mockup/reporte_mensual.png" alt="Reporte Mensual PDF" class="w-full rounded-[1.5rem] shadow-soft border border-slate-200/80 group-hover:-translate-y-2 transition-all duration-500" />
           </div>
         </div>
-        <div class="order-1 lg:order-2 space-y-6">
+        <div class="order-1 lg:order-2 space-y-6 observe-fade-from-right">
           <span class="font-heading font-bold text-slate-500 tracking-widest uppercase text-xs">Reportes Clínicos</span>
           <h3 class="font-heading text-3xl lg:text-4xl font-bold text-slate-900 leading-tight tracking-tight">El reporte que tu médico ya conoce</h3>
           <p class="text-lg text-slate-600 leading-relaxed text-balance">RenApp genera automáticamente un PDF mensual estructurado exactamente igual a la planilla física tradicional. Cero curva de aprendizaje para el equipo médico.</p>
@@ -681,20 +751,35 @@
     const observerOptions = {
       root: null,
       rootMargin: '0px',
-      threshold: 0.1
+      threshold: 0.25
     };
     
     const observer = new IntersectionObserver((entries, observer) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('animate-fade-up');
+          if (entry.target.classList.contains('observe-fade-from-left')) {
+            entry.target.classList.add('animate-fade-from-left');
+          } else if (entry.target.classList.contains('observe-fade-from-right')) {
+            entry.target.classList.add('animate-fade-from-right');
+          } else if (entry.target.classList.contains('observe-fade-sequence-1')) {
+            entry.target.classList.add('animate-fade-from-left');
+            entry.target.classList.add('stagger-500ms');
+          } else if (entry.target.classList.contains('observe-fade-sequence-2')) {
+            entry.target.classList.add('animate-fade-from-right');
+            entry.target.classList.add('stagger-2s');
+          } else if (entry.target.classList.contains('observe-fade-delay')) {
+            entry.target.classList.add('animate-fade-up-slow');
+            entry.target.classList.add('stagger-1s');
+          } else {
+            entry.target.classList.add('animate-fade-up-slow');
+          }
           entry.target.classList.remove('opacity-0');
           observer.unobserve(entry.target);
         }
       });
     }, observerOptions);
 
-    document.querySelectorAll('.observe-fade').forEach(el => {
+    document.querySelectorAll('.observe-fade, .observe-fade-from-left, .observe-fade-from-right, .observe-fade-delay, .observe-fade-sequence-1, .observe-fade-sequence-2').forEach(el => {
       el.classList.add('opacity-0');
       observer.observe(el);
     });
@@ -749,6 +834,22 @@
       imageModal.classList.remove('opacity-100', 'visible');
       document.body.style.overflow = 'auto';
     }
+
+    // Magnetic Buttons
+    document.querySelectorAll('.btn-magnetic').forEach(btn => {
+      btn.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const x = (e.clientX - rect.left) - rect.width / 2;
+        const y = (e.clientY - rect.top) - rect.height / 2;
+        // Move with a slight easing/dampening
+        btn.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+        btn.style.transition = 'transform 0.1s cubic-bezier(0.2, 0, 0.2, 1)';
+      });
+      btn.addEventListener('mouseleave', () => {
+        btn.style.transform = `translate(0px, 0px)`;
+        btn.style.transition = 'transform 0.5s cubic-bezier(0.2, 0, 0.2, 1)';
+      });
+    });
   </script>
 </body>
 </html>
