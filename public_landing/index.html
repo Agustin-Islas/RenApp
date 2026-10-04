@@ -16,7 +16,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <!-- Load Material Symbols asynchronously to prevent render blocking (1.1MB font) -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+  <noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  </noscript>
   
   <!-- Tailwind CSS (Compiled) -->
   <link href="output.css" rel="stylesheet">
@@ -112,7 +117,7 @@
     .observe-fade-sequence-1,
     .observe-fade-sequence-2 {
       opacity: 0;
-      will-change: opacity, filter, transform;
+      will-change: opacity, transform;
     }
 
     /* Staggered Animations */
@@ -190,14 +195,14 @@
       42%, 100% { top: 110%; opacity: 0; }
     }
     @keyframes fadeOutPaper {
-      0%, 32% { opacity: 1; filter: blur(0); transform: scale(1); }
-      40%, 85% { opacity: 0; filter: blur(8px); transform: scale(0.95); }
-      95%, 100% { opacity: 1; filter: blur(0); transform: scale(1); }
+      0%, 32% { opacity: 1; transform: scale(1); }
+      40%, 85% { opacity: 0; transform: scale(0.95); }
+      95%, 100% { opacity: 1; transform: scale(1); }
     }
     @keyframes fadeInDigital {
-      0%, 32% { opacity: 0; filter: blur(8px); transform: scale(1.05); }
-      40%, 85% { opacity: 1; filter: blur(0); transform: scale(1); }
-      95%, 100% { opacity: 0; filter: blur(8px); transform: scale(1.05); }
+      0%, 32% { opacity: 0; transform: scale(1.05); }
+      40%, 85% { opacity: 1; transform: scale(1); }
+      95%, 100% { opacity: 0; transform: scale(1.05); }
     }
     .font-handwriting {
       font-family: 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', cursive, sans-serif;
@@ -206,8 +211,8 @@
     
     /* Premium Style Text Reveal */
     @keyframes revealText {
-      from { transform: translateY(30px); opacity: 0; filter: blur(8px); }
-      to { transform: translateY(0); opacity: 1; filter: blur(0); }
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
 
     /* Apple Style Holographic Glitch */
