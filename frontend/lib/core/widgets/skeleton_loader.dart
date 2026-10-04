@@ -66,7 +66,7 @@ class SkeletonList extends StatelessWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: count,
-      separatorBuilder: (_, __) => const SizedBox(height: 16),
+      separatorBuilder: (context, index) => const SizedBox(height: 16),
       itemBuilder: (context, index) {
         return const SkeletonBlock(
           width: double.infinity,
