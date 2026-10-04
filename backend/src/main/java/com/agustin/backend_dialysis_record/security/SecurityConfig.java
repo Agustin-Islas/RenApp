@@ -31,7 +31,9 @@ public class SecurityConfig {
 
     @Bean
     public JwtDecoder jwtDecoder() {
-        byte[] keyBytes = java.util.Base64.getDecoder().decode(jwtSecret);
+        // Limpiamos cualquier espacio o salto de línea que Render pueda añadir por error
+        String cleanSecret = jwtSecret.trim().replaceAll("\\s+", "");
+        byte[] keyBytes = java.util.Base64.getDecoder().decode(cleanSecret);
         SecretKey secretKey = new SecretKeySpec(
                 keyBytes,
                 "HmacSHA256"
