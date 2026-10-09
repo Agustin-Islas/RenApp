@@ -26,13 +26,23 @@ class SessionExpansionCard extends StatelessWidget {
       elevation: 0,
       margin: const EdgeInsets.only(bottom: AppSpacing.sm),
       color: scheme.surface,
+      clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
         side: BorderSide(
           color: scheme.outlineVariant.withValues(alpha: 0.3),
         ),
       ),
-      child: ExpansionTile(
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border(
+            left: BorderSide(
+              color: _getConcentrationColor(session.concentration),
+              width: 6.0,
+            ),
+          ),
+        ),
+        child: ExpansionTile(
         shape: const Border(), // Removes top/bottom border when expanded
         collapsedShape: const Border(),
         tilePadding: const EdgeInsets.symmetric(
@@ -195,6 +205,7 @@ class SessionExpansionCard extends StatelessWidget {
           ],
         ],
       ),
+      ),
     );
   }
 
@@ -222,6 +233,14 @@ class SessionExpansionCard extends StatelessWidget {
       return '${parts[2]}/${parts[1]}/${parts[0]}';
     }
     return dateStr;
+  }
+
+  Color _getConcentrationColor(double? c) {
+    if (c == null) return Colors.transparent;
+    if ((c - 1.5).abs() < 0.1) return Colors.amber.shade500;
+    if ((c - 2.3).abs() < 0.1 || (c - 2.5).abs() < 0.1) return Colors.green.shade500;
+    if ((c - 3.8).abs() < 0.1 || (c - 4.25).abs() < 0.1) return Colors.red.shade500;
+    return Colors.grey.shade400; // Otras concentraciones personalizadas
   }
 }
 
