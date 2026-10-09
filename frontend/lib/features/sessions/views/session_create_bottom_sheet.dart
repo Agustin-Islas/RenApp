@@ -91,21 +91,32 @@ class _SessionCreateBottomSheetState
     return false;
   }
 
-  DateTime _computeClinicalDate(DateTime calendarDate, TimeOfDay timeOfDay) {
-    if (timeOfDay.hour < 5) {
-      return DateUtils.dateOnly(calendarDate.subtract(const Duration(days: 1)));
+  static const int _clinicalCutoffHour = 5;
+
+  DateTime _computeRealCalendarDate(DateTime selectedClinicalDate, TimeOfDay selectedTime) {
+    if (selectedTime.hour >= 0 && selectedTime.hour < _clinicalCutoffHour) {
+      return DateTime(
+        selectedClinicalDate.year,
+        selectedClinicalDate.month,
+        selectedClinicalDate.day + 1,
+        selectedTime.hour,
+        selectedTime.minute,
+      );
+    } else {
+      return DateTime(
+        selectedClinicalDate.year,
+        selectedClinicalDate.month,
+        selectedClinicalDate.day,
+        selectedTime.hour,
+        selectedTime.minute,
+      );
     }
-    return DateUtils.dateOnly(calendarDate);
   }
 
   int _calculateSuggestedBag() {
-    final targetClinical = _computeClinicalDate(_date, _time);
-    final targetIso = targetClinical.toIso8601String().substring(0, 10);
     int count = 0;
     for (final s in widget.existingSessions) {
-      if (s.effectiveDate != null && s.effectiveDate!.startsWith(targetIso)) {
-        count++;
-      } else if (_isSameDay(s.date, targetClinical)) {
+      if (_isSameDay(s.effectiveDate ?? s.date, _date)) {
         count++;
       }
     }
@@ -118,15 +129,12 @@ class _SessionCreateBottomSheetState
       final me = ref.read(authStateProvider).valueOrNull;
       final patientId = me?.id;
       if (patientId == null) return;
-      final targetClinical = _computeClinicalDate(_date, _time);
       final patientCtrl = ref.read(patientControllerProvider);
       final sessions = await patientCtrl.getSessionsByDay(
         patientId: patientId,
-        day: targetClinical,
+        day: _date,
       );
-      if (mounted &&
-          _computeClinicalDate(_date, _time) == targetClinical &&
-          !_isEditing) {
+      if (mounted && !_isEditing) {
         setState(() {
           _bagCtrl.text = (sessions.length + 1).toString();
         });
@@ -161,8 +169,19 @@ class _SessionCreateBottomSheetState
   void initState() {
     super.initState();
     final session = widget.initialSession;
-    _date = _parseDate(session?.date) ?? widget.initialDate;
     _time = _parseTime(session?.hour) ?? TimeOfDay.now();
+    
+    if (session != null) {
+      _date = _parseDate(session.effectiveDate) ?? widget.initialDate;
+    } else {
+      _date = widget.initialDate;
+      if (_time.hour < _clinicalCutoffHour) {
+         final now = DateTime.now();
+         if (_date.year == now.year && _date.month == now.month && _date.day == now.day) {
+            _date = DateUtils.dateOnly(_date.subtract(const Duration(days: 1)));
+         }
+      }
+    }
     if (session != null && session.bag != null) {
       _bagCtrl.text = session.bag!.toString();
     } else {
@@ -263,8 +282,9 @@ class _SessionCreateBottomSheetState
       return;
     }
 
+    final realDate = _computeRealCalendarDate(_date, _time);
     final data = SessionCreateFormData(
-      date: _date,
+      date: realDate,
       hour: _time,
       bag: _parseInt(_bagCtrl.text)!,
       concentration: _selectedConcentration!,
@@ -383,7 +403,7 @@ class _SessionCreateBottomSheetState
                         borderRadius: BorderRadius.circular(8),
                         child: InputDecorator(
                           decoration: const InputDecoration(
-                            labelText: 'Fecha',
+                            labelText: 'Jornada Clínica',
                             prefixIcon: Icon(PhosphorIconsRegular.calendarBlank, size: 20),
                           ),
                           child: Text(_formatDate(_date), style: const TextStyle(fontWeight: FontWeight.w600)),
@@ -498,7 +518,7 @@ class _SessionCreateBottomSheetState
                   decoration: const InputDecoration(labelText: 'Observaciones'),
                   validator: (v) => (v ?? '').length > 500 ? 'Máximo 500 caracteres' : null,
                 ),
-                if (_time.hour < 5) ...[
+                if (_time.hour < _clinicalCutoffHour) ...[
                   const SizedBox(height: 14),
                   Container(
                     padding: const EdgeInsets.all(12),
@@ -520,7 +540,7 @@ class _SessionCreateBottomSheetState
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
-                            'Turno trasnoche: Al ser antes de las 05:00 AM, este recambio se asociará al historial médico del día anterior (${_formatDate(_computeClinicalDate(_date, _time))}).',
+                            'Recambio nocturno asociado a la jornada clínica del ${_formatDate(_date)}.',
                             style: TextStyle(
                               fontSize: 12.5,
                               color: Colors.amber.shade900,

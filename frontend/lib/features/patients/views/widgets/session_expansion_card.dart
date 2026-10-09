@@ -140,7 +140,7 @@ class SessionExpansionCard extends StatelessWidget {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      'Cambio nocturno registrado el ${_formatDate(session.date)} después de medianoche, asignado a esta jornada clínica.',
+                      'Realizado en la madrugada del ${_formatDate(session.date)}.',
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.amber.shade900,
