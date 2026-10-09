@@ -1,6 +1,7 @@
 workflows:
   android-debug-apk:
     name: Android Debug APK
+    instance_type: linux_x2
     working_directory: frontend
     max_build_duration: 60
     environment:
@@ -20,6 +21,7 @@ workflows:
 
   android-release-aab:
     name: Android Release AAB
+    instance_type: linux_x2
     working_directory: frontend
     max_build_duration: 60
     environment:
