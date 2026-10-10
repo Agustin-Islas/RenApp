@@ -10,6 +10,7 @@ import 'package:frontend_dialysis_record/features/auth/providers/auth_providers.
 import 'package:frontend_dialysis_record/features/patients/views/widgets/session_expansion_card.dart';
 import 'package:frontend_dialysis_record/features/reports/four_weeks_dialysis_pdf_service.dart';
 import 'package:frontend_dialysis_record/features/reports/monthly_dialysis_pdf_service.dart';
+import 'package:frontend_dialysis_record/features/reports/pdf_export_service.dart';
 import 'package:frontend_dialysis_record/features/sessions/models/four_weeks_ultrafiltration_summary.dart';
 import 'package:frontend_dialysis_record/features/sessions/models/monthly_ultrafiltration_summary.dart';
 import 'package:frontend_dialysis_record/features/sessions/models/session_dto.dart';
@@ -108,8 +109,14 @@ class _PatientHistoryScreenState extends ConsumerState<PatientHistoryScreen> {
       );
       final fileName =
           'reporte_${_selectedMonth.month.toString().padLeft(2, '0')}_${_selectedMonth.year}.pdf';
-      await _pdfService.download(bytes, fileName);
-      if (mounted) AppSnackBar.success(context, 'PDF generado');
+          
+      if (mounted) {
+        PdfExportService.viewOrDownloadPdf(
+          context: context,
+          pdfBytes: bytes,
+          filename: fileName,
+        );
+      }
     } catch (e) {
       if (mounted) {
         AppSnackBar.showException(context, e, 'No se pudo generar el PDF.');
@@ -153,8 +160,13 @@ class _PatientHistoryScreenState extends ConsumerState<PatientHistoryScreen> {
       final fileName =
           'reporte_${dayMonth.format(startDate)}_${dayMonthYear.format(endDate)}.pdf';
 
-      await _fourWeeksPdfService.download(bytes, fileName);
-      if (mounted) AppSnackBar.success(context, 'PDF de 4 semanas generado');
+      if (mounted) {
+        PdfExportService.viewOrDownloadPdf(
+          context: context,
+          pdfBytes: bytes,
+          filename: fileName,
+        );
+      }
     } catch (e) {
       if (mounted) {
         AppSnackBar.showException(
