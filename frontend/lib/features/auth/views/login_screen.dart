@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
@@ -23,6 +24,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _emailCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
   bool _isLoading = false;
+  bool _obscurePassword = true;
 
   @override
   void dispose() {
@@ -57,6 +59,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         if (authState.hasError) {
           throw authState.error!;
         }
+        
+        // Si el login y la sincronización fueron exitosos, le pedimos a 
+        // Android/iOS que guarde las credenciales (muestra el cartelito de Google)
+        TextInput.finishAutofillContext();
+        
       } catch (e) {
         // Sign out from Supabase if backend is unreachable or user not found
         await Supabase.instance.client.auth.signOut();
@@ -153,12 +160,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(AppSpacing.xxl),
-                        child: Form(
-                          key: _formKey,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
+                        child: AutofillGroup(
+                          child: Form(
+                            key: _formKey,
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
                           Text(
                             'Bienvenido',
                             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -182,6 +190,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             controller: _emailCtrl,
                             keyboardType: TextInputType.emailAddress,
                             textInputAction: TextInputAction.next,
+                            autofillHints: const [AutofillHints.email],
                             decoration: const InputDecoration(
                               labelText: 'Correo electrónico',
                               prefixIcon: Icon(PhosphorIconsRegular.envelope),
@@ -199,11 +208,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           // ── Password field ──
                           TextFormField(
                             controller: _passwordCtrl,
-                            obscureText: true,
+                            obscureText: _obscurePassword,
                             textInputAction: TextInputAction.done,
-                            decoration: const InputDecoration(
+                            autofillHints: const [AutofillHints.password],
+                            decoration: InputDecoration(
                               labelText: 'Contraseña',
-                              prefixIcon: Icon(PhosphorIconsRegular.lockKey),
+                              prefixIcon: const Icon(PhosphorIconsRegular.lockKey),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  _obscurePassword
+                                      ? PhosphorIconsRegular.eye
+                                      : PhosphorIconsRegular.eyeSlash,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _obscurePassword = !_obscurePassword;
+                                  });
+                                },
+                              ),
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -292,12 +314,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 child: const Text('Profesional'),
                               ),
                             ],
-                          ),
+                          ), // closes Row
                         ],
-                      ),
-                    ),
-                  ),
-                ), // <-- Cierra Card
+                      ), // closes Column
+                    ), // closes Form
+                  ), // closes AutofillGroup
+                ), // closes Padding
+              ), // closes Card
               ],
             ),
           ),
