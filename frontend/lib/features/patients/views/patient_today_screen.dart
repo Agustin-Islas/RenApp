@@ -23,16 +23,27 @@ class PatientTodayScreen extends ConsumerStatefulWidget {
 }
 
 class PatientTodayScreenState extends ConsumerState<PatientTodayScreen> {
-  final PageController _pageController = PageController();
-
+  late final PageController _pageController;
+  late int _daysAgo;
   final DateFormat _shortDateFormat = DateFormat('dd/MM');
   final DateFormat _heroDateFormat = DateFormat('EEEE dd/MM', 'es');
-  int _daysAgo = 0;
   final Map<int, _DayData> _dayDataCache = {};
+
+  int get _todayIndex => DateTime.now().hour < 5 ? 1 : 0;
+
+  DateTime get _clinicalToday {
+    final now = DateTime.now();
+    if (now.hour < 5) {
+      return DateUtils.dateOnly(now.subtract(const Duration(days: 1)));
+    }
+    return DateUtils.dateOnly(now);
+  }
 
   @override
   void initState() {
     super.initState();
+    _daysAgo = _todayIndex;
+    _pageController = PageController(initialPage: _daysAgo);
     WidgetsBinding.instance.addPostFrameCallback((_) => _preloadDays());
   }
 
@@ -198,8 +209,8 @@ class PatientTodayScreenState extends ConsumerState<PatientTodayScreen> {
   }
 
   String _titleFor(DateTime day) {
-    final today = DateUtils.dateOnly(DateTime.now());
-    final diff = today.difference(DateUtils.dateOnly(day)).inDays;
+    final diff = _clinicalToday.difference(DateUtils.dateOnly(day)).inDays;
+    if (diff == -1) return 'Mañana';
     if (diff == 0) return 'Hoy';
     if (diff == 1) return 'Ayer';
     final format = DateFormat('EEEE', 'es');
@@ -258,7 +269,7 @@ class PatientTodayScreenState extends ConsumerState<PatientTodayScreen> {
                         canGoForward: index > 0,
                         onPrevious: () => _goToDay(index + 1),
                         onNext: index == 0 ? null : () => _goToDay(index - 1),
-                        onToday: index == 0 ? null : () => _goToDay(0),
+                        onToday: index == _todayIndex ? null : () => _goToDay(_todayIndex),
                       ),
                       const SizedBox(height: AppSpacing.md),
                       _DayStrip(

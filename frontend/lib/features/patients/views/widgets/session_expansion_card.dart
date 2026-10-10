@@ -157,6 +157,23 @@ class SessionExpansionCard extends StatelessWidget {
                       ),
                     ),
                   ),
+                  const SizedBox(width: 4),
+                  InkWell(
+                    onTap: () => _showNightShiftHelpDialog(context),
+                    borderRadius: BorderRadius.circular(20),
+                    child: Container(
+                      padding: const EdgeInsets.all(6.0),
+                      decoration: BoxDecoration(
+                        color: Colors.amber.withValues(alpha: 0.2),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        PhosphorIconsRegular.question,
+                        color: Colors.amber.shade900,
+                        size: 16,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -241,6 +258,46 @@ class SessionExpansionCard extends StatelessWidget {
     if ((c - 2.3).abs() < 0.1 || (c - 2.5).abs() < 0.1) return Colors.green.shade500;
     if ((c - 3.8).abs() < 0.1 || (c - 4.25).abs() < 0.1) return Colors.red.shade500;
     return Colors.grey.shade400; // Otras concentraciones personalizadas
+  }
+
+  void _showNightShiftHelpDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(
+          children: [
+            Icon(Icons.nightlight_round, color: Colors.amber.shade800),
+            const SizedBox(width: 8),
+            const Expanded(
+              child: Text(
+                'Recambios Nocturnos',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+        content: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 450),
+          child: Text(
+            'Su médico necesita ver todos los recambios que usted realiza en su día antes de ir a dormir como un solo "bloque" (su Jornada Clínica).\n\n'
+            'Si usted realiza su último recambio a la madrugada (por ejemplo, a las 02:00 AM), el sistema sabrá automáticamente que pertenece a su día anterior y lo guardará ordenado junto con el resto de las bolsas de ese día.\n\n'
+            'Usted solo asegúrese de seleccionar el día que siente que está cerrando e ingresar la hora real del reloj. Nosotros nos encargamos del resto.',
+            style: TextStyle(
+              fontSize: 14,
+              height: 1.4,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Entendido', style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
+        ],
+      ),
+    );
   }
 }
 
