@@ -30,14 +30,16 @@ public class SessionDto {
     @DecimalMin(value = "0.0", inclusive = true, message = "concentration must be >= 0")
     private Float concentration;
 
-    // ml, sin máximo
+    // ml, rango tipico 1000-2500, maximo estricto 5000
     @NotNull(message = "infusion is required")
     @Min(value = 0, message = "infusion must be >= 0 (ml)")
+    @Max(value = 5000, message = "infusion must be <= 5000 (ml)")
     private Integer infusion;
 
-    // ml, sin máximo
+    // ml, rango tipico 1500-3200, maximo holgado 5000
     @NotNull(message = "drainage is required")
     @Min(value = 0, message = "drainage must be >= 0 (ml)")
+    @Max(value = 5000, message = "drainage must be <= 5000 (ml)")
     private Integer drainage;
 
     private Integer partial;

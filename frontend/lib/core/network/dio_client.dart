@@ -34,7 +34,24 @@ class DioClient {
       InterceptorsWrapper(
         onRequest: (options, handler) async {
           // Obtener el token de acceso directamente de la sesión actual de Supabase
-          final session = Supabase.instance.client.auth.currentSession;
+          var session = Supabase.instance.client.auth.currentSession;
+
+          // Timeout mínimo reactivo en caso de arranque en frío
+          if (session == null) {
+            for (var i = 0; i < 6 && session == null; i++) {
+              await Future.delayed(const Duration(milliseconds: 50));
+              session = Supabase.instance.client.auth.currentSession;
+            }
+          }
+
+          // Si el token está expirado, refrescarlo antes de despachar la petición
+          if (session != null && session.isExpired) {
+            try {
+              final res = await Supabase.instance.client.auth.refreshSession();
+              session = res.session ?? Supabase.instance.client.auth.currentSession;
+            } catch (_) {}
+          }
+
           final access = session?.accessToken;
 
           if (access != null && access.isNotEmpty) {
@@ -42,7 +59,21 @@ class DioClient {
           }
           handler.next(options);
         },
-        onError: (e, handler) {
+        onError: (e, handler) async {
+          // Si el backend retorna 401 Unauthorized y existe sesión, reintentar refrescando token una vez
+          if (e.response?.statusCode == 401) {
+            try {
+              final res = await Supabase.instance.client.auth.refreshSession();
+              final newAccess = res.session?.accessToken;
+              if (newAccess != null && newAccess.isNotEmpty) {
+                final requestOptions = e.requestOptions;
+                requestOptions.headers['Authorization'] = 'Bearer $newAccess';
+                final cloneReq = await dio.fetch(requestOptions);
+                return handler.resolve(cloneReq);
+              }
+            } catch (_) {}
+          }
+
           handler.reject(
             DioException(
               requestOptions: e.requestOptions,

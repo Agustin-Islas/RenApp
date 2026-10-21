@@ -47,7 +47,8 @@ class SessionCreateBottomSheet extends ConsumerStatefulWidget {
 }
 
 class _SessionCreateBottomSheetState
-    extends ConsumerState<SessionCreateBottomSheet> {
+    extends ConsumerState<SessionCreateBottomSheet>
+    with WidgetsBindingObserver {
   final _formKey = GlobalKey<FormState>();
 
   late DateTime _date;
@@ -57,6 +58,12 @@ class _SessionCreateBottomSheetState
   final _infusionCtrl = TextEditingController();
   final _drainageCtrl = TextEditingController();
   final _obsCtrl = TextEditingController();
+
+  final _bagFocusNode = FocusNode();
+  final _infusionFocusNode = FocusNode();
+  final _drainageFocusNode = FocusNode();
+  final _obsFocusNode = FocusNode();
+  FocusNode? _lastFocusedNode;
 
   double? _selectedConcentration;
   bool _loading = false;
@@ -159,6 +166,7 @@ class _SessionCreateBottomSheetState
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     final session = widget.initialSession;
     _date = _parseDate(session?.date) ?? widget.initialDate;
     _time = _parseTime(session?.hour) ?? TimeOfDay.now();
@@ -176,11 +184,43 @@ class _SessionCreateBottomSheetState
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _bagFocusNode.dispose();
+    _infusionFocusNode.dispose();
+    _drainageFocusNode.dispose();
+    _obsFocusNode.dispose();
     _bagCtrl.dispose();
     _infusionCtrl.dispose();
     _drainageCtrl.dispose();
     _obsCtrl.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused ||
+        state == AppLifecycleState.hidden) {
+      if (_infusionFocusNode.hasFocus) {
+        _lastFocusedNode = _infusionFocusNode;
+      } else if (_drainageFocusNode.hasFocus) {
+        _lastFocusedNode = _drainageFocusNode;
+      } else if (_obsFocusNode.hasFocus) {
+        _lastFocusedNode = _obsFocusNode;
+      } else if (_bagFocusNode.hasFocus) {
+        _lastFocusedNode = _bagFocusNode;
+      }
+    } else if (state == AppLifecycleState.resumed) {
+      final node = _lastFocusedNode;
+      if (node != null && mounted) {
+        // Breve retardo para permitir que la ventana nativa (Android/iOS) reconecte el IME
+        Future.delayed(const Duration(milliseconds: 100), () {
+          if (mounted && node.canRequestFocus) {
+            node.requestFocus();
+          }
+        });
+      }
+    }
   }
 
   TimeOfDay? _parseTime(String? value) {
@@ -278,6 +318,15 @@ class _SessionCreateBottomSheetState
   String? _requiredInt(String? value, String label) {
     if (value == null || value.trim().isEmpty) return '$label requerido';
     if (_parseInt(value) == null) return 'Numero invalido';
+    return null;
+  }
+
+  String? _validateVolume(String? value, String label, int max) {
+    if (value == null || value.trim().isEmpty) return '$label requerido';
+    final parsed = _parseInt(value);
+    if (parsed == null) return 'Número inválido';
+    if (parsed < 0) return '$label no puede ser negativo';
+    if (parsed > max) return '$label máx: $max ml';
     return null;
   }
 
@@ -406,6 +455,7 @@ class _SessionCreateBottomSheetState
                 if (!isPatientRole) ...[
                   TextFormField(
                     controller: _bagCtrl,
+                    focusNode: _bagFocusNode,
                     enabled: !_loading,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
@@ -481,6 +531,7 @@ class _SessionCreateBottomSheetState
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _infusionCtrl,
+                  focusNode: _infusionFocusNode,
                   enabled: !_loading,
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -494,11 +545,12 @@ class _SessionCreateBottomSheetState
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                     prefixIcon: const Icon(Icons.arrow_downward, size: 22),
                   ),
-                  validator: (v) => _requiredInt(v, 'Infusión'),
+                  validator: (v) => _validateVolume(v, 'Infusión', 5000),
                 ),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _drainageCtrl,
+                  focusNode: _drainageFocusNode,
                   enabled: !_loading,
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -512,11 +564,12 @@ class _SessionCreateBottomSheetState
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                     prefixIcon: const Icon(Icons.arrow_upward, size: 22),
                   ),
-                  validator: (v) => _requiredInt(v, 'Drenaje'),
+                  validator: (v) => _validateVolume(v, 'Drenaje', 5000),
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _obsCtrl,
+                  focusNode: _obsFocusNode,
                   enabled: !_loading,
                   maxLines: 3,
                   decoration: const InputDecoration(labelText: 'Observaciones'),

@@ -24,8 +24,26 @@ class AuthNotifier extends AsyncNotifier<MeResponse?> {
       }
     });
 
-    final session = Supabase.instance.client.auth.currentSession;
+    // Timeout mínimo reactivo al inicio para dar tiempo a que Supabase recupere la sesión local
+    var session = Supabase.instance.client.auth.currentSession;
+    if (session == null) {
+      for (var i = 0; i < 8 && session == null; i++) {
+        await Future.delayed(const Duration(milliseconds: 50));
+        session = Supabase.instance.client.auth.currentSession;
+      }
+    }
+
     if (session != null) {
+      // Si el token está expirado, refrescarlo antes de proseguir
+      if (session.isExpired) {
+        try {
+          final res = await Supabase.instance.client.auth.refreshSession();
+          session = res.session ?? Supabase.instance.client.auth.currentSession;
+        } catch (e) {
+          if (kDebugMode) debugPrint('Error refrescando sesión expirada: $e');
+        }
+      }
+
       // 1. UI Optimista: Leer caché para carga instantánea (0 latencia)
       final cachedStr = await _storage.read(key: _cachedMeKey);
       if (cachedStr != null) {
@@ -50,7 +68,13 @@ class AuthNotifier extends AsyncNotifier<MeResponse?> {
   }
 
   Future<MeResponse?> _fetchAndSync() async {
-    final session = Supabase.instance.client.auth.currentSession;
+    var session = Supabase.instance.client.auth.currentSession;
+    if (session == null) {
+      for (var i = 0; i < 6 && session == null; i++) {
+        await Future.delayed(const Duration(milliseconds: 50));
+        session = Supabase.instance.client.auth.currentSession;
+      }
+    }
     if (session == null) return null;
 
     final controller = ref.read(authControllerProvider);

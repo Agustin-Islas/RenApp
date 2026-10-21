@@ -131,6 +131,64 @@ class SessionControllerTest {
                             .content(objectMapper.writeValueAsString(invalidDto)))
                     .andExpect(status().isBadRequest());
         }
+
+        @Test
+        @DisplayName("Crear sesión con infusión > 5000 ml retorna 400 Bad Request")
+        void crearSesion_infusionExcedeMaximo_retorna400() throws Exception {
+            UUID patientId = UUID.randomUUID();
+            SessionDto dto = buildValidSessionDto();
+            dto.setInfusion(5001);
+
+            when(authzService.canAccessPatient(patientId)).thenReturn(true);
+
+            mockMvc.perform(post("/api/patients/" + patientId + "/sessions")
+                            .with(jwt().jwt(j -> j.subject(AUTH_ID)))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(dto)))
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("Crear sesión con drenaje > 5000 ml retorna 400 Bad Request")
+        void crearSesion_drainageExcedeMaximo_retorna400() throws Exception {
+            UUID patientId = UUID.randomUUID();
+            SessionDto dto = buildValidSessionDto();
+            dto.setDrainage(5001);
+
+            when(authzService.canAccessPatient(patientId)).thenReturn(true);
+
+            mockMvc.perform(post("/api/patients/" + patientId + "/sessions")
+                            .with(jwt().jwt(j -> j.subject(AUTH_ID)))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(dto)))
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("Crear sesión con límites máximos permitidos (5000 infusión, 5000 drenaje) es válida")
+        void crearSesion_limitesMaximosValidos_retorna200() throws Exception {
+            UUID patientId = UUID.randomUUID();
+            SessionDto requestDto = buildValidSessionDto();
+            requestDto.setInfusion(5000);
+            requestDto.setDrainage(5000);
+
+            SessionDto responseDto = buildValidSessionDto();
+            responseDto.setInfusion(5000);
+            responseDto.setDrainage(5000);
+            responseDto.setPartial(0);
+
+            when(authzService.canAccessPatient(patientId)).thenReturn(true);
+            when(sessionService.createForPatient(eq(patientId), any(SessionDto.class)))
+                    .thenReturn(responseDto);
+
+            mockMvc.perform(post("/api/patients/" + patientId + "/sessions")
+                            .with(jwt().jwt(j -> j.subject(AUTH_ID)))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(requestDto)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.infusion").value(5000))
+                    .andExpect(jsonPath("$.drainage").value(5000));
+        }
     }
 
     // ═══════════════════════════════════════════════════════
