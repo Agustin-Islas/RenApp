@@ -26,14 +26,14 @@ workflows:
         script: flutter build apk --debug --dart-define=API_BASE_URL=$API_BASE_URL
       - name: Prepare release asset
         script: |
-          RELEASE_TAG=${CM_TAG:-latest}
+          RELEASE_TAG=${CM_TAG:-v1.0.0}
           cp build/app/outputs/flutter-apk/app-debug.apk build/app/outputs/flutter-apk/RenApp-${RELEASE_TAG}.apk
+          if [ -n "$GITHUB_TOKEN" ] && [ -n "$CM_TAG" ]; then
+            echo "Uploading RenApp-${RELEASE_TAG}.apk to GitHub Release ${CM_TAG}..."
+            gh release upload "$CM_TAG" build/app/outputs/flutter-apk/RenApp-${RELEASE_TAG}.apk --clobber || true
+          fi
     artifacts:
       - build/app/outputs/flutter-apk/RenApp-*.apk
-    publishing:
-      github_releases:
-        draft: false
-        prerelease: false
 
   android-debug-apk:
     name: Android Debug APK
