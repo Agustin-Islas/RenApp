@@ -335,36 +335,20 @@ class _PatientDetailForDoctorScreenState
                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                      children: [
                                        Expanded(
-                                         child: Column(
-                                           crossAxisAlignment: CrossAxisAlignment.start,
-                                           children: [
-                                             Text(
-                                               _selectedChartIndex == 0 ? 'Balance Total Diario' : 'Carga de Glucosa',
-                                               style: const TextStyle(
-                                                 fontSize: 16,
-                                                 fontWeight: FontWeight.w700,
-                                               ),
-                                               maxLines: 1,
-                                               overflow: TextOverflow.ellipsis,
-                                             ),
-                                             const SizedBox(height: 2),
-                                             Text(
-                                               _selectedChartIndex == 0
-                                                   ? 'Suma neta de extracciones y retenciones por jornada'
-                                                   : 'Eficacia osmótica promedio por tipo de bolsa',
-                                               style: TextStyle(
-                                                 fontSize: 12,
-                                                 color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                               ),
-                                             ),
-                                           ],
+                                         child: Text(
+                                           _selectedChartIndex == 0 ? 'Balance Total Diario' : 'Carga de Glucosa',
+                                           style: const TextStyle(
+                                             fontSize: 16,
+                                             fontWeight: FontWeight.w700,
+                                           ),
+                                           maxLines: 2,
                                          ),
                                        ),
                                        const SizedBox(width: 8),
                                        SegmentedButton<int>(
                                          segments: const [
-                                           ButtonSegment(value: 0, icon: Icon(PhosphorIconsRegular.chartLineUp), label: Text('UF')),
-                                           ButtonSegment(value: 1, icon: Icon(PhosphorIconsRegular.chartPieSlice), label: Text('Glucosa')),
+                                           ButtonSegment(value: 0, icon: Icon(PhosphorIconsRegular.chartLineUp, size: 16), label: Text('UF')),
+                                           ButtonSegment(value: 1, icon: Icon(PhosphorIconsRegular.chartPieSlice, size: 16), label: Text('Glucosa')),
                                          ],
                                          selected: {_selectedChartIndex},
                                          onSelectionChanged: (newSelection) {
@@ -373,11 +357,23 @@ class _PatientDetailForDoctorScreenState
                                            });
                                          },
                                          showSelectedIcon: false,
-                                         style: ButtonStyle(
-                                            visualDensity: VisualDensity.compact,
+                                         style: const ButtonStyle(
+                                           visualDensity: VisualDensity.compact,
+                                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                           padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 8)),
                                          ),
                                        ),
                                      ],
+                                   ),
+                                   const SizedBox(height: 4),
+                                   Text(
+                                     _selectedChartIndex == 0
+                                         ? 'Suma neta de extracciones y retenciones por jornada'
+                                         : 'Eficacia osmótica promedio por tipo de bolsa',
+                                     style: TextStyle(
+                                       fontSize: 12,
+                                       color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                     ),
                                    ),
                                    if (_selectedChartIndex == 0) ...[
                                      const SizedBox(height: 8),
@@ -940,16 +936,43 @@ class _DailyUltrafiltrationChartState
           lineColor: scheme.primary.withValues(alpha: 0.5),
           lineWidth: 1.5,
           lineDashArray: const <double>[5, 5],
-          tooltipSettings: InteractiveTooltip(
-            enable: true,
-            format: 'Día point.x: point.y ml',
-            color: scheme.surfaceContainerHighest,
-            textStyle: TextStyle(
-              color: scheme.onSurface,
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+          tooltipDisplayMode: TrackballDisplayMode.floatAllPoints,
+          builder: (BuildContext context, TrackballDetails trackballDetails) {
+            final point = trackballDetails.point;
+            final isMedia = trackballDetails.seriesIndex == 1 ||
+                (trackballDetails.series != null && trackballDetails.series.name == 'Media Mensual');
+            final yVal = point?.y;
+            String valStr = '';
+            if (yVal is num) {
+              valStr = yVal % 1 == 0 ? '${yVal.toInt()} ml' : '${yVal.toStringAsFixed(1)} ml';
+            } else {
+              valStr = '$yVal ml';
+            }
+            final text = isMedia ? 'Media: $valStr' : 'Día ${point?.x}: $valStr';
+
+            return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: scheme.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(4),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.15),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Text(
+                text,
+                style: TextStyle(
+                  color: scheme.onSurface,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            );
+          },
         ),
         primaryXAxis: CategoryAxis(
           crossesAt: 0,
@@ -1376,6 +1399,8 @@ class _ConcentrationPieChart extends StatelessWidget {
             return Tooltip(
               message: tooltipMessage,
               triggerMode: TooltipTriggerMode.tap,
+              showDuration: const Duration(minutes: 5),
+              enableTapToDismiss: true,
               preferBelow: false,
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               margin: const EdgeInsets.symmetric(horizontal: 16),
