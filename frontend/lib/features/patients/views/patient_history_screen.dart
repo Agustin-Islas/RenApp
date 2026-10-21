@@ -630,7 +630,7 @@ class _UltrafiltrationSummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final weeklyValues = summary.weeklyUltrafiltration;
+    final weeklyItems = summary.weeklyItems;
 
     return Card(
       elevation: 0,
@@ -692,11 +692,10 @@ class _UltrafiltrationSummaryCard extends StatelessWidget {
                     crossAxisCount: columns,
                     crossAxisSpacing: AppSpacing.sm,
                     mainAxisSpacing: AppSpacing.sm,
-                    mainAxisExtent: 78,
+                    mainAxisExtent: 84,
                   ),
                   itemBuilder: (context, index) => _WeeklyUfTile(
-                    week: index + 1,
-                    value: weeklyValues[index],
+                    item: weeklyItems[index],
                   ),
                 );
               },
@@ -719,18 +718,43 @@ class _UltrafiltrationSummaryCard extends StatelessWidget {
 }
 
 class _WeeklyUfTile extends StatelessWidget {
-  final int week;
-  final int value;
+  final WeeklyFluidSummaryItem item;
 
-  const _WeeklyUfTile({required this.week, required this.value});
+  const _WeeklyUfTile({required this.item});
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
 
+    Color badgeBg;
+    Color badgeTextColor;
+    Color valueColor;
+
+    switch (item.status) {
+      case WeeklyFluidStatus.ultrafiltration:
+        badgeBg = const Color(0xFFE8F5E9); // Verde menta pastel suave
+        badgeTextColor = const Color(0xFF2E7D32); // Verde clínico oscuro
+        valueColor = const Color(0xFF1B5E20);
+        break;
+      case WeeklyFluidStatus.retention:
+        badgeBg = const Color(0xFFFBE9E7); // Terracota / melocotón suave anti-pánico
+        badgeTextColor = const Color(0xFFC0392B); // Terracota suave
+        valueColor = const Color(0xFFC0392B);
+        break;
+      case WeeklyFluidStatus.neutral:
+        badgeBg = scheme.surfaceContainerHighest;
+        badgeTextColor = scheme.onSurface;
+        valueColor = scheme.primary;
+        break;
+      case WeeklyFluidStatus.noData:
+        badgeBg = scheme.surfaceContainerHighest.withValues(alpha: 0.5);
+        badgeTextColor = scheme.onSurfaceVariant;
+        valueColor = scheme.onSurfaceVariant.withValues(alpha: 0.7);
+        break;
+    }
+
     return Container(
-      width: 140,
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
         color: scheme.surface,
         borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
@@ -738,22 +762,101 @@ class _WeeklyUfTile extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Flexible(
+                child: Text(
+                  'Semana ${item.weekNumber}',
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: scheme.onSurface,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              const SizedBox(width: 4),
+              Tooltip(
+                message: item.tooltipMessage,
+                triggerMode: TooltipTriggerMode.tap,
+                preferBelow: false,
+                showDuration: const Duration(seconds: 10),
+                margin: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                textStyle: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  height: 1.3,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF2C3E50),
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.2),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: badgeBg,
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(
+                        color: badgeTextColor.withValues(alpha: 0.25),
+                        width: 0.8,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          item.statusLabel,
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
+                            color: badgeTextColor,
+                            decoration: TextDecoration.underline,
+                            decorationStyle: TextDecorationStyle.dotted,
+                            decorationColor: badgeTextColor.withValues(alpha: 0.6),
+                          ),
+                        ),
+                        const SizedBox(width: 3),
+                        Icon(
+                          PhosphorIconsRegular.info,
+                          size: 9.5,
+                          color: badgeTextColor.withValues(alpha: 0.75),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
           Text(
-            'UF semana $week',
+            item.dateRangeLabel,
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
               color: scheme.onSurfaceVariant,
-              fontWeight: FontWeight.w600,
+              fontSize: 10,
             ),
           ),
-          const SizedBox(height: AppSpacing.xs),
-          AnimatedNumberText(
-            number: value.toDouble(),
-            formatter: (v) => '$value ml/día',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w800,
-              color: scheme.primary,
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              item.formattedValue,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w800,
+                color: valueColor,
+              ),
             ),
           ),
         ],

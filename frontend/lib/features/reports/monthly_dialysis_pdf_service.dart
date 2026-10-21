@@ -152,10 +152,15 @@ class MonthlyDialysisPdfService {
   }
 
   pw.Widget _summary(MonthlyUltrafiltrationSummary summary) {
-    pw.Widget item(String label, String value) {
+    pw.Widget item(
+      String label,
+      String subtitle,
+      String value, {
+      PdfColor? valueColor,
+    }) {
       return pw.Expanded(
         child: pw.Container(
-          padding: const pw.EdgeInsets.all(7),
+          padding: const pw.EdgeInsets.symmetric(horizontal: 5, vertical: 5),
           decoration: pw.BoxDecoration(
             border: pw.Border.all(color: PdfColors.grey400, width: 0.5),
           ),
@@ -164,17 +169,29 @@ class MonthlyDialysisPdfService {
             children: [
               pw.Text(
                 label,
-                style: const pw.TextStyle(
-                  fontSize: 7,
-                  color: PdfColors.grey700,
+                style: pw.TextStyle(
+                  fontSize: 7.5,
+                  fontWeight: pw.FontWeight.bold,
+                  color: PdfColors.grey800,
                 ),
               ),
+              if (subtitle.isNotEmpty) ...[
+                pw.SizedBox(height: 1),
+                pw.Text(
+                  subtitle,
+                  style: const pw.TextStyle(
+                    fontSize: 5.5,
+                    color: PdfColors.grey600,
+                  ),
+                ),
+              ],
               pw.SizedBox(height: 2),
               pw.Text(
                 value,
                 style: pw.TextStyle(
-                  fontSize: 11,
+                  fontSize: 9,
                   fontWeight: pw.FontWeight.bold,
+                  color: valueColor ?? PdfColors.black,
                 ),
               ),
             ],
@@ -183,16 +200,45 @@ class MonthlyDialysisPdfService {
       );
     }
 
+    final weekWidgets = summary.weeklyItems.map((wItem) {
+      String displayVal;
+      PdfColor? color;
+
+      switch (wItem.status) {
+        case WeeklyFluidStatus.ultrafiltration:
+          displayVal = 'UF: ${wItem.formattedValue}';
+          color = PdfColor.fromHex('#2E7D32');
+          break;
+        case WeeklyFluidStatus.retention:
+          displayVal = 'Retención: ${wItem.formattedValue}';
+          color = PdfColor.fromHex('#C0392B');
+          break;
+        case WeeklyFluidStatus.neutral:
+          displayVal = 'Neutro: 0 ml/día';
+          color = PdfColors.black;
+          break;
+        case WeeklyFluidStatus.noData:
+          displayVal = '--';
+          color = PdfColors.grey600;
+          break;
+      }
+
+      return item(
+        'Semana ${wItem.weekNumber}',
+        wItem.dateRangeLabel,
+        displayVal,
+        valueColor: color,
+      );
+    }).toList();
+
     return pw.Row(
       children: [
         item(
-          'Promedio de cambios diarios',
+          'Cambios diarios',
+          'Promedio mes',
           _formatAvg(summary.totalChanges, summary.elapsedDays),
         ),
-        item('UF semana 1', '${summary.weeklyUltrafiltration[0]} ml/dia'),
-        item('UF semana 2', '${summary.weeklyUltrafiltration[1]} ml/dia'),
-        item('UF semana 3', '${summary.weeklyUltrafiltration[2]} ml/dia'),
-        item('UF semana 4', '${summary.weeklyUltrafiltration[3]} ml/dia'),
+        ...weekWidgets,
       ],
     );
   }

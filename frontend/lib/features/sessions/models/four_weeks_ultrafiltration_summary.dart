@@ -1,25 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:frontend_dialysis_record/features/sessions/models/monthly_ultrafiltration_summary.dart';
 import 'package:frontend_dialysis_record/features/sessions/models/session_dto.dart';
+
+export 'package:frontend_dialysis_record/features/sessions/models/monthly_ultrafiltration_summary.dart'
+    show WeeklyFluidStatus, WeeklyFluidSummaryItem;
 
 class FourWeeksUltrafiltrationSummary {
   final int totalChanges;
   final List<int> weeklyUltrafiltration;
   final List<int> weekDayCounts;
   final int elapsedDays;
+  final List<WeeklyFluidSummaryItem> weeklyItems;
 
   const FourWeeksUltrafiltrationSummary({
     required this.totalChanges,
     required this.weeklyUltrafiltration,
     required this.weekDayCounts,
     required this.elapsedDays,
+    required this.weeklyItems,
   });
 
   factory FourWeeksUltrafiltrationSummary.empty() {
-    return const FourWeeksUltrafiltrationSummary(
+    final emptyItems = List.generate(
+      4,
+      (i) => WeeklyFluidSummaryItem(
+        weekNumber: i + 1,
+        dateRangeLabel: 'Días ${i * 7 + 1} - ${(i + 1) * 7}',
+        averageValue: 0,
+        status: WeeklyFluidStatus.noData,
+        closedDays: 0,
+        rawSum: 0,
+      ),
+    );
+
+    return FourWeeksUltrafiltrationSummary(
       totalChanges: 0,
-      weeklyUltrafiltration: [0, 0, 0, 0],
-      weekDayCounts: [7, 7, 7, 7],
-      elapsedDays: 27,
+      weeklyUltrafiltration: const [0, 0, 0, 0],
+      weekDayCounts: const [7, 7, 7, 7],
+      elapsedDays: 28,
+      weeklyItems: emptyItems,
     );
   }
 }
@@ -29,8 +48,7 @@ class FourWeeksUltrafiltrationCalculator {
     required DateTime endDate,
     required List<SessionDto> sessions,
   }) {
-    // endDate is today. startDate is today - 27 days.
-    // Total exactly 28 days.
+    // endDate is today. startDate is today - 27 days. Total exactly 28 days.
     final end = DateUtils.dateOnly(endDate);
     final start = end.subtract(const Duration(days: 27));
     final weekDayCounts = <int>[7, 7, 7, 7];
@@ -40,20 +58,15 @@ class FourWeeksUltrafiltrationCalculator {
         ? DateUtils.dateOnly(nowDateTime.subtract(const Duration(days: 1)))
         : DateUtils.dateOnly(nowDateTime);
 
-    // Adjust weekDayCounts if the currentClinicalDate is within the 4-week window
+    // Ajustar conteo de días cerrados transcurridos
     for (int i = 0; i <= 27; i++) {
       final currentDay = start.add(Duration(days: i));
       if (!currentDay.isBefore(currentClinicalDate)) {
-        // If currentDay is today or in the future, it hasn't ended. Subtract it from its week.
         final weekIndex = i ~/ 7;
         if (weekIndex >= 0 && weekIndex < 4) {
           weekDayCounts[weekIndex]--;
         }
       }
-    }
-    // Prevent division by zero
-    for (int i = 0; i < 4; i++) {
-      if (weekDayCounts[i] == 0) weekDayCounts[i] = 1;
     }
 
     final weekTotals = List<int>.filled(4, 0);
@@ -67,7 +80,7 @@ class FourWeeksUltrafiltrationCalculator {
 
       var day = DateUtils.dateOnly(date);
 
-      // Adjust for clinical date: post-midnight sessions belong to previous day
+      // Ajuste de jornada clínica: recambios post-medianoche pertenecen a la jornada anterior
       final hourStr = session.hour;
       if (hourStr != null && hourStr.isNotEmpty) {
         final timeParts = hourStr.split(':');
@@ -85,9 +98,8 @@ class FourWeeksUltrafiltrationCalculator {
 
       totalChanges++;
 
-      // Calculate which week it falls into
-      final differenceInDays = day.difference(start).inDays; // 0 to 27
-      final weekIndex = differenceInDays ~/ 7; // 0, 1, 2, or 3
+      final differenceInDays = day.difference(start).inDays;
+      final weekIndex = differenceInDays ~/ 7;
 
       if (weekIndex < 0 || weekIndex > 3) continue;
 
@@ -96,15 +108,61 @@ class FourWeeksUltrafiltrationCalculator {
           ((session.infusion ?? 0) - (session.drainage ?? 0));
     }
 
+    String formatDayMonth(DateTime d) =>
+        '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}';
+
+    final weeklyItems = <WeeklyFluidSummaryItem>[];
+    for (int i = 0; i < 4; i++) {
+      final closedDays = weekDayCounts[i];
+      final sum = weekTotals[i];
+      final wStart = start.add(Duration(days: i * 7));
+      final wEnd = start.add(Duration(days: i * 7 + 6));
+      final weekRangeLabel = '${formatDayMonth(wStart)} - ${formatDayMonth(wEnd)}';
+
+      if (closedDays <= 0) {
+        weeklyItems.add(
+          WeeklyFluidSummaryItem(
+            weekNumber: i + 1,
+            dateRangeLabel: weekRangeLabel,
+            averageValue: 0,
+            status: WeeklyFluidStatus.noData,
+            closedDays: 0,
+            rawSum: 0,
+          ),
+        );
+      } else {
+        final avg = (sum.abs() / closedDays).round();
+        WeeklyFluidStatus status;
+        if (sum < 0) {
+          status = WeeklyFluidStatus.ultrafiltration;
+        } else if (sum > 0) {
+          status = WeeklyFluidStatus.retention;
+        } else {
+          status = WeeklyFluidStatus.neutral;
+        }
+
+        weeklyItems.add(
+          WeeklyFluidSummaryItem(
+            weekNumber: i + 1,
+            dateRangeLabel: weekRangeLabel,
+            averageValue: avg,
+            status: status,
+            closedDays: closedDays,
+            rawSum: sum,
+          ),
+        );
+      }
+    }
+
     return FourWeeksUltrafiltrationSummary(
       totalChanges: totalChanges,
-      weeklyUltrafiltration: List.generate(
-        4,
-        (index) => (weekTotals[index] / weekDayCounts[index]).round(),
-        growable: false,
-      ),
-      weekDayCounts: weekDayCounts,
-      elapsedDays: weekDayCounts.fold(0, (sum, count) => sum + count),
+      weeklyUltrafiltration: weeklyItems.map((e) {
+        if (e.status == WeeklyFluidStatus.noData) return 0;
+        return e.status == WeeklyFluidStatus.retention ? e.averageValue : e.averageValue;
+      }).toList(),
+      weekDayCounts: weekDayCounts.map((c) => c <= 0 ? 1 : c).toList(),
+      elapsedDays: weekDayCounts.fold(0, (s, c) => s + (c > 0 ? c : 0)),
+      weeklyItems: weeklyItems,
     );
   }
 
