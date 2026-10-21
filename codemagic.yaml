@@ -1,4 +1,40 @@
 workflows:
+  android-github-release:
+    name: Android GitHub Release
+    instance_type: mac_mini_m1
+    working_directory: frontend
+    max_build_duration: 60
+    triggering:
+      events:
+        - tag
+      tag_patterns:
+        - pattern: 'v*'
+          include: true
+    environment:
+      flutter: stable
+      java: 17
+      vars:
+        API_BASE_URL: "https://backend-dialysis-record-system-spring.onrender.com"
+    scripts:
+      - name: Get Flutter packages
+        script: flutter pub get
+      - name: Analyze project
+        script: flutter analyze
+      - name: Run unit tests
+        script: flutter test test/monthly_ultrafiltration_calculator_test.dart
+      - name: Build APK
+        script: flutter build apk --debug --dart-define=API_BASE_URL=$API_BASE_URL
+      - name: Prepare release asset
+        script: |
+          RELEASE_TAG=${CM_TAG:-latest}
+          cp build/app/outputs/flutter-apk/app-debug.apk build/app/outputs/flutter-apk/RenApp-${RELEASE_TAG}.apk
+    artifacts:
+      - build/app/outputs/flutter-apk/RenApp-*.apk
+    publishing:
+      github_releases:
+        draft: false
+        prerelease: false
+
   android-debug-apk:
     name: Android Debug APK
     instance_type: mac_mini_m1

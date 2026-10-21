@@ -14,6 +14,7 @@ Override the `API_BASE_URL` variable in Codemagic if the backend URL changes.
 
 ## Workflows
 
+- `android-github-release`: builds and publishes an APK directly to GitHub Releases upon pushing a tag (e.g. `v1.1.0`).
 - `android-debug-apk`: builds a debug APK for manual testing.
 - `android-release-aab`: builds a signed Android App Bundle for Google Play.
 - `web-release`: builds Flutter Web and exports `build/web` as an artifact.
