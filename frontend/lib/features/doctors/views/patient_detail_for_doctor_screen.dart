@@ -335,14 +335,29 @@ class _PatientDetailForDoctorScreenState
                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                      children: [
                                        Expanded(
-                                         child: Text(
-                                           _selectedChartIndex == 0 ? 'Evolución de Balance Diario' : 'Carga de Glucosa',
-                                           style: const TextStyle(
-                                             fontSize: 16,
-                                             fontWeight: FontWeight.w700,
-                                           ),
-                                           maxLines: 2,
-                                           overflow: TextOverflow.ellipsis,
+                                         child: Column(
+                                           crossAxisAlignment: CrossAxisAlignment.start,
+                                           children: [
+                                             Text(
+                                               _selectedChartIndex == 0 ? 'Balance Total Diario' : 'Carga de Glucosa',
+                                               style: const TextStyle(
+                                                 fontSize: 16,
+                                                 fontWeight: FontWeight.w700,
+                                               ),
+                                               maxLines: 1,
+                                               overflow: TextOverflow.ellipsis,
+                                             ),
+                                             const SizedBox(height: 2),
+                                             Text(
+                                               _selectedChartIndex == 0
+                                                   ? 'Suma neta de extracciones y retenciones por jornada'
+                                                   : 'Eficacia osmótica promedio por tipo de bolsa',
+                                               style: TextStyle(
+                                                 fontSize: 12,
+                                                 color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                               ),
+                                             ),
+                                           ],
                                          ),
                                        ),
                                        const SizedBox(width: 8),
@@ -927,6 +942,7 @@ class _DailyUltrafiltrationChartState
           lineDashArray: const <double>[5, 5],
           tooltipSettings: InteractiveTooltip(
             enable: true,
+            format: 'Día point.x: point.y ml',
             color: scheme.surfaceContainerHighest,
             textStyle: TextStyle(
               color: scheme.onSurface,
@@ -966,7 +982,7 @@ class _DailyUltrafiltrationChartState
         ),
         series: <CartesianSeries<_ChartData, String>>[
           ColumnSeries<_ChartData, String>(
-            name: 'Balance Diario',
+            name: 'Total del día',
             dataSource: chartData,
             xValueMapper: (_ChartData data, _) => data.day,
             yValueMapper: (_ChartData data, _) => data.value,
@@ -1355,43 +1371,66 @@ class _ConcentrationPieChart extends StatelessWidget {
           runSpacing: 12,
           alignment: WrapAlignment.center,
           children: dataSource.map((data) {
-            return Container(
+            final formattedAvg = '${data.avgPartial > 0 ? '+' : ''}${data.avgPartial} ml/bolsa';
+            final tooltipMessage = 'Promedio de balance obtenido en las ${data.count} bolsas al ${data.label} utilizadas en el mes';
+            return Tooltip(
+              message: tooltipMessage,
+              triggerMode: TooltipTriggerMode.tap,
+              preferBelow: false,
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              margin: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
-                color: scheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                color: scheme.inverseSurface,
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: scheme.outlineVariant.withValues(alpha: 0.5)),
               ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 12,
-                    height: 12,
-                    decoration: BoxDecoration(
-                      color: data.color,
-                      shape: BoxShape.circle,
+              textStyle: TextStyle(
+                color: scheme.onInverseSurface,
+                fontSize: 12,
+              ),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: scheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: scheme.outlineVariant.withValues(alpha: 0.5)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 12,
+                      height: 12,
+                      decoration: BoxDecoration(
+                        color: data.color,
+                        shape: BoxShape.circle,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '${data.label} (${data.count} bolsas)',
-                        style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
-                      ),
-                      Text(
-                        'Parcial prom: ${data.avgPartial} ml',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 12,
-                          color: data.avgPartial <= 0 ? scheme.primary : scheme.error,
+                    const SizedBox(width: 8),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${data.label} (${data.count} bolsas)',
+                          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                        Text(
+                          'Rendimiento: $formattedAvg',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 12,
+                            color: data.avgPartial <= 0 ? scheme.primary : scheme.error,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(width: 6),
+                    Icon(
+                      PhosphorIconsRegular.info,
+                      size: 14,
+                      color: scheme.onSurfaceVariant.withValues(alpha: 0.7),
+                    ),
+                  ],
+                ),
               ),
             );
           }).toList(),
